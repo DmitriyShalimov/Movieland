@@ -5,6 +5,7 @@ import com.shalimov.movieland.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,4 +38,13 @@ public class MovieController {
         logger.info("Movies  are {}", movies);
         return movies;
     }
+    @GetMapping(value = "/v1/movie/genre/{genreId}")
+    @ResponseBody
+    public List<Movie> getMoviesByGenre(@PathVariable int genreId) {
+        logger.info("Retrieving all movies from genre with id {}",genreId);
+        List<Movie> movies = movieService.getMoviesByGenre(genreId);
+        logger.info("Movies  are {}", movies);
+        return movies;
+    }
+
 }

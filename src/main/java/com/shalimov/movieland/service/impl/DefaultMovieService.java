@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class DefaultMovieService implements MovieService {
-    private  final MovieDao movieDao;
+    private final MovieDao movieDao;
     private final CountryDao countryDao;
     private final GenreDao genreDao;
 
@@ -34,6 +35,13 @@ public class DefaultMovieService implements MovieService {
     @Override
     public List<Movie> getRandomMovies() {
         List<Movie> movies = movieDao.getRandomMovies();
+        updateMovies(movies);
+        return movies;
+    }
+
+    @Override
+    public List<Movie> getMoviesByGenre(int id) {
+        List<Movie> movies = movieDao.getMoviesByGenre(id);
         updateMovies(movies);
         return movies;
     }

@@ -11,6 +11,14 @@
     <bean id="getAllGenresSql" class="java.lang.String">
         <constructor-arg value="SELECT g.id, g.name FROM genre AS g;"/>
     </bean>
+    <bean id="getMoviesByGenre" class="java.lang.String">
+        <constructor-arg value="SELECT m.id, m.name_russian, m.name_native, m.year_of_release, m.description, m.rating, m.price
+	                            ,m.picture_path FROM movie AS m
+                                LEFT JOIN movie_genre AS mg ON mg.movie=m.id
+                                WHERE mg.genre=:genreId"/>
+    </bean>
+
+
     <bean id="getGenreForMovie" class="java.lang.String">
         <constructor-arg value="SELECT g.id, g.name FROM genre AS g
                                 LEFT JOIN movie_genre AS mg ON mg.genre = g.id
