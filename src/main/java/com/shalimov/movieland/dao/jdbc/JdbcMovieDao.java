@@ -13,6 +13,7 @@ import java.util.List;
 public class JdbcMovieDao implements MovieDao {
 
     private String getAllMoviesSql;
+    private String getRandomMoviesSql;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -23,11 +24,21 @@ public class JdbcMovieDao implements MovieDao {
         return namedParameterJdbcTemplate.query(getAllMoviesSql, MOVIE_ROW_MAPPER);
     }
 
+    @Override
+    public List<Movie> getRandomMovies() {
+        logger.info("start receiving random movies");
+        return namedParameterJdbcTemplate.query(getRandomMoviesSql, MOVIE_ROW_MAPPER);
+    }
+
     public void setGetAllMoviesSql(String getAllMoviesSql) {
         this.getAllMoviesSql = getAllMoviesSql;
     }
 
     public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
+
+    public void setGetRandomMoviesSql(String getRandomMoviesSql) {
+        this.getRandomMoviesSql = getRandomMoviesSql;
     }
 }

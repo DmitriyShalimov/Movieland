@@ -28,4 +28,13 @@ public class MovieController {
         logger.info("Movies  are {}", movies);
         return movies;
     }
+
+    @GetMapping(value = "/v1/movie/random")
+    @ResponseBody
+    public List<Movie> getRandomMovies() {
+        logger.info("Retrieving Random movies");
+        List<Movie> movies = movieService.getRandomMovies();
+        logger.info("Movies  are {}", movies);
+        return movies;
+    }
 }

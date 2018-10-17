@@ -27,13 +27,24 @@ public class DefaultMovieService implements MovieService {
     @Override
     public List<Movie> getAll() {
         List<Movie> movies = movieDao.getAll();
+        updateMovies(movies);
+        return movies;
+    }
+
+    @Override
+    public List<Movie> getRandomMovies() {
+        List<Movie> movies = movieDao.getRandomMovies();
+        updateMovies(movies);
+        return movies;
+    }
+
+    private void updateMovies(List<Movie> movies) {
         for (Movie movie : movies) {
             List<Country> countries = countryDao.getCountryForMovie(movie.getId());
             movie.setCountries(countries);
             List<Genre> genres = genreDao.getGenreForMovie(movie.getId());
             movie.setGenres(genres);
         }
-        return movies;
     }
 
 
