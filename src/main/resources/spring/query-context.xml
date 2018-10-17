@@ -4,5 +4,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
+    <bean id="getAllMoviesSql" class="java.lang.String">
+        <constructor-arg value="SELECT m.id, m.name_russian, m.name_native, m.year_of_release, m.description, m.rating, m.price
+	                            ,m.picture_path FROM movie AS m;"/>
+    </bean>
+    <bean id="getGenreForMovie" class="java.lang.String">
+        <constructor-arg value="SELECT g.id, g.name FROM genre AS g
+                                LEFT JOIN movie_genre AS mg ON mg.genre = g.id
+                                WHERE mg.movie=:movieId "/>
+    </bean>
+    <bean id="getCountryForMovie" class="java.lang.String">
+        <constructor-arg value="SELECT c.id, c.name FROM country AS c
+                                LEFT JOIN movie_country AS mc ON mc.country = c.id
+                                WHERE mc.movie=:movieId;"/>
+    </bean>
 </beans>

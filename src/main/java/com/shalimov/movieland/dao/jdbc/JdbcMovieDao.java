@@ -1,11 +1,31 @@
 package com.shalimov.movieland.dao.jdbc;
 
 import com.shalimov.movieland.dao.MovieDao;
+import com.shalimov.movieland.dao.jdbc.mapper.MovieRowMapper;
+import com.shalimov.movieland.entity.Movie;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import java.util.List;
 
 public class JdbcMovieDao implements MovieDao {
 
+    private String getAllMoviesSql;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Override
+    public List<Movie> getAll() {
+        logger.info("start receiving all movies");
+        return namedParameterJdbcTemplate.query(getAllMoviesSql, MOVIE_ROW_MAPPER);
+    }
+
+    public void setGetAllMoviesSql(String getAllMoviesSql) {
+        this.getAllMoviesSql = getAllMoviesSql;
+    }
 
     public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;

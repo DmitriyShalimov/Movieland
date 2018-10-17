@@ -7,12 +7,12 @@ public class Movie {
     private String nameRussian;
     private String nameNative;
     private int yearOfRelease;
-    private List<Genre> genres;
     private String description;
     private double price;
     private double rating;
     private String picturePath;
     private List<Country> countries;
+    private List<Genre> genres;
 
     public int getId() {
         return id;
