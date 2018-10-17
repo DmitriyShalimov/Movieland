@@ -11,11 +11,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository
 public class JdbcGenreDao implements GenreDao {
 
-    private String getGenreForMovie;
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private String getAllGenresSql;
+    private String getGenreForMovie;
     private static final RowMapper<Genre> GENRE_ROW_MAPPER = new GenreRowMapper();
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -26,6 +28,16 @@ public class JdbcGenreDao implements GenreDao {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("movieId", id);
         return namedParameterJdbcTemplate.query(getGenreForMovie, params, GENRE_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Genre> getAll() {
+        logger.info("start receiving all genres");
+        return namedParameterJdbcTemplate.query(getAllGenresSql, GENRE_ROW_MAPPER);
+    }
+
+    public void setGetAllGenresSql(String getAllGenresSql) {
+        this.getAllGenresSql = getAllGenresSql;
     }
 
     public void setGetGenreForMovie(String getGenreForMovie) {
