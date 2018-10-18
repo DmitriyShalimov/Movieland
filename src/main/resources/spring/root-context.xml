@@ -41,6 +41,7 @@
     </bean>
     <bean id="countryDao" class="com.shalimov.movieland.dao.jdbc.JdbcCountryDao">
         <property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
+        <property name="getAllCountriesSql" ref="getAllCountriesSql"/>
     </bean>
 
     <task:scheduler id="taskScheduler" />

@@ -22,7 +22,7 @@ public class GenreController {
     }
     @GetMapping(value = "/v1/genre")
     @ResponseBody
-    public List<Genre> getAllMovies() {
+    public List<Genre> getAllGenres() {
         logger.info("Retrieving all genres");
         List<Genre> genres = genreService.getAll();
         logger.info("Genres  are {}", genres);

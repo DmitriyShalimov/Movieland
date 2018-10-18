@@ -1,10 +1,9 @@
-package com.shalimov.movieland.dao;
+package com.shalimov.movieland.service;
 
 import com.shalimov.movieland.entity.Country;
 
 import java.util.List;
 
-public interface CountryDao {
-
+public interface CountryService {
     List<Country> getAll();
 }

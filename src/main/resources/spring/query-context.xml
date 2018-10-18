@@ -24,4 +24,8 @@
     <bean id="getMovieByIdSql" class="java.lang.String">
         <constructor-arg value=" WHERE m.id=:movieId;"/>
     </bean>
+    <bean id="getAllCountriesSql" class="java.lang.String">
+        <constructor-arg value="SELECT c.id, c.name FROM country AS c;"/>
+    </bean>
+
 </beans>
