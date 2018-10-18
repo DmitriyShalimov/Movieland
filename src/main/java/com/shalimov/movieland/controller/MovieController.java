@@ -56,5 +56,13 @@ public class MovieController {
         logger.info("Movies  are {}", movies);
         return movies;
     }
+    @GetMapping(value = "/v1/movie/{movieId}")
+    @ResponseBody
+    public Movie getMovieById(@PathVariable int movieId) {
+        logger.info("Retrieving movie with id {}", movieId);
+        Movie movie = movieService.getMovieById(movieId);
+        logger.info("Movie  is {}", movie);
+        return movie;
+    }
 
 }

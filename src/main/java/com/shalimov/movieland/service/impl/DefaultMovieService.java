@@ -35,10 +35,15 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(int id, MovieFilter movieFilter) {
-        List<Movie> movies = movieDao.getMoviesByGenre(id);
+    public List<Movie> getMoviesByGenre(int genreId, MovieFilter movieFilter) {
+        List<Movie> movies = movieDao.getMoviesByGenre(genreId);
         sortMovies(movies, movieFilter);
         return movies;
+    }
+
+    @Override
+    public Movie getMovieById(int movieId) {
+        return movieDao.getMovieById(movieId);
     }
 
     private void sortMovies(List<Movie> movies, MovieFilter movieFilter) {

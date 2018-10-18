@@ -30,9 +30,10 @@
 
     <bean id="movieDao" class="com.shalimov.movieland.dao.jdbc.JdbcMovieDao">
         <property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
-        <property name="getAllMoviesSql" ref="getMoviesSql"/>
+        <property name="getMoviesSql" ref="getMoviesSql"/>
         <property name="getRandomMoviesSql" ref="getRandomMoviesSql"/>
         <property name="getMoviesByGenre" ref="getMoviesByGenre"/>
+        <property name="getMovieByIdSql" ref="getMovieByIdSql"/>
     </bean>
     <bean id="genreDao" class="com.shalimov.movieland.dao.jdbc.JdbcGenreDao">
         <property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>

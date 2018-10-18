@@ -14,6 +14,7 @@ import java.util.List;
 public class JdbcMovieDao implements MovieDao {
 
     private String getMoviesSql;
+    private String getMovieByIdSql;
     private String getRandomMoviesSql;
     private String getMoviesByGenre;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -33,14 +34,22 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(int id) {
-        logger.info("start receiving movies by genre with id {}", id);
+    public List<Movie> getMoviesByGenre(int genreId) {
+        logger.info("start receiving movies by genre with id {}", genreId);
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("genreId", id);
+        params.addValue("genreId", genreId);
         return namedParameterJdbcTemplate.query(getMoviesSql + getMoviesByGenre, params, MOVIE_EXTRACTOR);
     }
 
-    public void setGetAllMoviesSql(String getAllMoviesSql) {
+    @Override
+    public Movie getMovieById(int movieId) {
+        logger.info("start receiving movies  with id {}", movieId);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("movieId", movieId);
+        return namedParameterJdbcTemplate.query(getMoviesSql+getMovieByIdSql,params,MOVIE_EXTRACTOR).get(0);
+    }
+
+    public void setGetMoviesSql(String getAllMoviesSql) {
         this.getMoviesSql = getAllMoviesSql;
     }
 
@@ -54,5 +63,9 @@ public class JdbcMovieDao implements MovieDao {
 
     public void setGetMoviesByGenre(String getMoviesByGenre) {
         this.getMoviesByGenre = getMoviesByGenre;
+    }
+
+    public void setGetMovieByIdSql(String getMovieByIdSql) {
+        this.getMovieByIdSql = getMovieByIdSql;
     }
 }

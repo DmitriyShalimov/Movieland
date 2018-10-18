@@ -9,5 +9,7 @@ public interface MovieDao {
 
     List<Movie> getRandomMovies();
 
-    List<Movie> getMoviesByGenre(int id);
+    List<Movie> getMoviesByGenre(int genreId);
+
+    Movie getMovieById(int movieId);
 }

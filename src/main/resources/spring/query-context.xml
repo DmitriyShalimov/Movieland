@@ -21,5 +21,7 @@
     <bean id="getRandomMoviesSql" class="java.lang.String">
         <constructor-arg value=" order by random() limit 3;"/>
     </bean>
-
+    <bean id="getMovieByIdSql" class="java.lang.String">
+        <constructor-arg value=" WHERE m.id=:movieId;"/>
+    </bean>
 </beans>
