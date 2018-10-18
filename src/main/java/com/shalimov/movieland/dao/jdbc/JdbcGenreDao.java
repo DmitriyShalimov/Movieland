@@ -14,21 +14,10 @@ import java.util.List;
 
 @Repository
 public class JdbcGenreDao implements GenreDao {
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private String getAllGenresSql;
-    private String getGenreForMovie;
     private static final RowMapper<Genre> GENRE_ROW_MAPPER = new GenreRowMapper();
-
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Override
-    public List<Genre> getGenreForMovie(int id) {
-        logger.info("start receiving genres for movie with id {}", id);
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("movieId", id);
-        return namedParameterJdbcTemplate.query(getGenreForMovie, params, GENRE_ROW_MAPPER);
-    }
 
     @Override
     public List<Genre> getAll() {
@@ -38,10 +27,6 @@ public class JdbcGenreDao implements GenreDao {
 
     public void setGetAllGenresSql(String getAllGenresSql) {
         this.getAllGenresSql = getAllGenresSql;
-    }
-
-    public void setGetGenreForMovie(String getGenreForMovie) {
-        this.getGenreForMovie = getGenreForMovie;
     }
 
     public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
