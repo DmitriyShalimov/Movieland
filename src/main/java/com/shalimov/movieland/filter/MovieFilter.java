@@ -3,22 +3,22 @@ package com.shalimov.movieland.filter;
 import com.shalimov.movieland.entity.SortType;
 
 public class MovieFilter {
-   private SortType price;
-   private SortType rating;
+   private SortType priceOrder;
+   private SortType ratingOrder;
 
-    public SortType getPrice() {
-        return price;
+    public SortType getPriceOrder() {
+        return priceOrder;
     }
 
-    public void setPrice(SortType price) {
-        this.price = price;
+    public void setPriceOrder(SortType priceOrder) {
+        this.priceOrder = priceOrder;
     }
 
-    public SortType getRating() {
-        return rating;
+    public SortType getRatingOrder() {
+        return ratingOrder;
     }
 
-    public void setRating(SortType rating) {
-        this.rating = rating;
+    public void setRatingOrder(SortType ratingOrder) {
+        this.ratingOrder = ratingOrder;
     }
 }

@@ -43,8 +43,19 @@
         <property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
         <property name="getAllCountriesSql" ref="getAllCountriesSql"/>
     </bean>
-
-    <task:scheduler id="taskScheduler" />
-    <task:executor id="taskExecutor" pool-size="1" />
-    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler" />
+    <bean id="genreService" class="com.shalimov.movieland.service.impl.DefaultGenreService">
+        <property name="genreDao" ref="cachedGenreDao"/>
+    </bean>
+    <bean id="cachedGenreDao" class="com.shalimov.movieland.dao.cache.CachedGenreDao">
+        <property name="genreDao" ref="genreDao"/>
+    </bean>
+    <bean id="cachedCountryDao" class="com.shalimov.movieland.dao.cache.CachedCountryDao">
+        <property name="countryDao" ref="countryDao"/>
+    </bean>
+    <bean id="countryService" class="com.shalimov.movieland.service.impl.DefaultCountryService">
+        <property name="countryDao" ref="cachedCountryDao"/>
+    </bean>
+    <task:scheduler id="taskScheduler"/>
+    <task:executor id="taskExecutor" pool-size="1"/>
+    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
 </beans>

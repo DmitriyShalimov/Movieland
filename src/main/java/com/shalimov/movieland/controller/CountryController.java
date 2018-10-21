@@ -24,7 +24,7 @@ public class CountryController {
     @GetMapping(value = "/v1/country")
     @ResponseBody
     public List<Country> getAllCountries() {
-        logger.info("Retrieving all countriess");
+        logger.info("Retrieving all countries");
         List<Country> countries = countryService.getAll();
         logger.info("Countries  are {}", countries);
         return countries;

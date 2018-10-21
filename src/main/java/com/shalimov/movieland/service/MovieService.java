@@ -1,5 +1,6 @@
 package com.shalimov.movieland.service;
 
+import com.shalimov.movieland.entity.Currency;
 import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.filter.MovieFilter;
 
@@ -12,5 +13,5 @@ public interface MovieService {
 
     List<Movie> getMoviesByGenre(int genreId, MovieFilter movieFilter);
 
-    Movie getMovieById(int movieId);
+    Movie getMovieById(int movieId, Currency currency);
 }

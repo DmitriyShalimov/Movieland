@@ -65,6 +65,12 @@
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.7.7</version>
         </dependency>
+        <!-- Json -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>
