@@ -1,12 +1,23 @@
 package com.shalimov.movieland.entity;
 
+import java.util.UUID;
+
 public class User {
     private int id;
-    private String login;
+    private String nickName;
     private String password;
     private String salt;
     private String email;
     private UserType userType;
+    private UUID uuid;
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 
     public int getId() {
         return id;
@@ -16,12 +27,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getPassword() {
@@ -54,5 +65,16 @@ public class User {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickName='" + nickName + '\'' +
+                ", email='" + email + '\'' +
+                ", userType=" + userType +
+                ", uuid=" + uuid +
+                '}';
     }
 }

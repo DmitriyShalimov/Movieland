@@ -1,10 +1,10 @@
-package com.shalimov.movieland.dao;
+package com.shalimov.movieland.service;
 
 import com.shalimov.movieland.entity.User;
 
 import java.util.Optional;
 
-public interface UserDao {
-
+public interface UserService {
     Optional<User> getByEmail(String email);
+
 }
