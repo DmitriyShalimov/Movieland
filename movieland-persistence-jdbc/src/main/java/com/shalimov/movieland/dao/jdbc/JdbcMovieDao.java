@@ -24,6 +24,10 @@ public class JdbcMovieDao implements MovieDao {
             " LEFT JOIN country c ON c.id = mc.country" +
             " LEFT JOIN movie_genre mg ON mg.movie = m.id" +
             " LEFT JOIN genre g ON g.id = mg.genre";
+    private final String ADD_NEW_MOVIE_SQL="INSERT INTO movie (name_russian,name_native,year_of_release,description,rating" +
+            ",price,picture_path) VALUES(:name_russian, :name_native, :year_of_release,:description,:rating,:price,:picture_path)";
+    private final String EDIT_MOVIE_SQL="UPDATE movie SET name_russian=:name_russian,name_native=:name_native," +
+            "year_of_release=year_of_release,description=:description,rating=:rating,price=:price,picture_path=:picture_path WHERE id=:id";
     private final String getMovieByIdSql = " WHERE m.id=:movieId;";
     private final String getRandomMoviesSql = " order by random() limit 3;";
     private final String getMoviesByGenre = " WHERE g.id=:genreId";
@@ -63,6 +67,39 @@ public class JdbcMovieDao implements MovieDao {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("movieId", movieId);
         return namedParameterJdbcTemplate.query(getMoviesSql + getMovieByIdSql, params, MOVIE_EXTRACTOR).get(0);
+    }
+
+    @Override
+    public boolean addMovie(Movie movie) {
+        logger.info("Start update movie");
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name_russian", movie.getNameRussian());
+        params.addValue("name_native", movie.getNameNative());
+        params.addValue("year_of_release", movie.getYearOfRelease());
+        params.addValue("description", movie.getDescription());
+        params.addValue("rating", movie.getRating());
+        params.addValue("price",movie.getPrice());
+        params.addValue("picture_path", movie.getPicturePath());
+        int result = namedParameterJdbcTemplate.update(ADD_NEW_MOVIE_SQL, params);
+        logger.info("Movie  saved");
+        return result == 1;
+    }
+
+    @Override
+    public boolean editMovie(Movie movie) {
+        logger.info("Start upload movie");
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", movie.getId());
+        params.addValue("name_russian", movie.getNameRussian());
+        params.addValue("name_native", movie.getNameNative());
+        params.addValue("year_of_release", movie.getYearOfRelease());
+        params.addValue("description", movie.getDescription());
+        params.addValue("rating", movie.getRating());
+        params.addValue("price",movie.getPrice());
+        params.addValue("picture_path", movie.getPicturePath());
+        int result = namedParameterJdbcTemplate.update(EDIT_MOVIE_SQL, params);
+        logger.info("Movie  update");
+        return result == 1;
     }
 
     private String addSortingSql(MovieRequest movieRequest) {

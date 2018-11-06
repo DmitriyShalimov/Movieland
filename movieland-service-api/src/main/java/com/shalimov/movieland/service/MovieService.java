@@ -14,4 +14,8 @@ public interface MovieService {
     List<Movie> getMoviesByGenre(int genreId, MovieRequest movieRequest);
 
     Movie getMovieById(int movieId, Currency currency);
+
+    boolean editMovie(Movie movie);
+
+    boolean addMovie(Movie movie);
 }

@@ -1,15 +1,14 @@
 package com.shalimov.movieland.web.controller;
 
-import com.shalimov.movieland.entity.Currency;
-import com.shalimov.movieland.entity.Movie;
-import com.shalimov.movieland.entity.MovieRequest;
-import com.shalimov.movieland.entity.SortType;
+import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -62,6 +61,27 @@ public class MovieController {
         Movie movie = movieService.getMovieById(movieId, currency);
         logger.info("Movie  is {}", movie);
         return movie;
+    }
+    @PostMapping(path = "/movie")
+    public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative,@RequestParam int yearOfRelease,
+                                   @RequestParam String description,@RequestParam String picturePath,
+                                   @RequestParam double rating,@RequestParam double price, HttpSession session) {
+        Movie movie=new Movie(nameRussian,nameNative,yearOfRelease,description,price,rating,picturePath);
+        if (movieService.addMovie(movie))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.badRequest().build();
+    }
+    @PutMapping(path = "/movie/{movieId}")
+    public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative,@RequestParam int yearOfRelease,
+                                    @RequestParam String description,@RequestParam String picturePath,
+                                    @RequestParam double rating,@RequestParam double price, HttpSession session) {
+        Movie movie=new Movie(nameRussian,nameNative,yearOfRelease,description,price,rating,picturePath);
+        movie.setId(movieId);
+        if (movieService.editMovie(movie))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.badRequest().build();
     }
 
 }

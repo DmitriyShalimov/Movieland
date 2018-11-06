@@ -14,6 +14,19 @@ public class Movie {
     private List<Country> countries;
     private List<Genre> genres;
 
+    public Movie() {
+    }
+
+    public Movie( String nameRussian, String nameNative, int yearOfRelease, String description, double price, double rating, String picturePath) {
+        this.nameRussian = nameRussian;
+        this.nameNative = nameNative;
+        this.yearOfRelease = yearOfRelease;
+        this.description = description;
+        this.price = price;
+        this.rating = rating;
+        this.picturePath = picturePath;
+    }
+
     public int getId() {
         return id;
     }

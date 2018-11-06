@@ -50,4 +50,14 @@ public class DefaultMovieService implements MovieService {
         movie.setPrice(movie.getPrice()/rate);
         return movie;
     }
+
+    @Override
+    public boolean editMovie(Movie movie) {
+        return movieDao.editMovie(movie);
+    }
+
+    @Override
+    public boolean addMovie(Movie movie) {
+        return movieDao.addMovie(movie);
+    }
 }
