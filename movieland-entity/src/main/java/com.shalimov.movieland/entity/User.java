@@ -1,5 +1,6 @@
 package com.shalimov.movieland.entity;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class User {
@@ -65,6 +66,24 @@ public class User {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(nickName, user.nickName) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(salt, user.salt) &&
+                Objects.equals(email, user.email) &&
+                userType == user.userType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nickName, password, salt, email, userType);
     }
 
     @Override

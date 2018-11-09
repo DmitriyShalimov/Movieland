@@ -62,26 +62,36 @@ public class MovieController {
         logger.info("Movie  is {}", movie);
         return movie;
     }
-    @PostMapping(path = "/movie")
-    public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative,@RequestParam int yearOfRelease,
-                                   @RequestParam String description,@RequestParam String picturePath,
-                                   @RequestParam double rating,@RequestParam double price, HttpSession session) {
-        Movie movie=new Movie(nameRussian,nameNative,yearOfRelease,description,price,rating,picturePath);
-        if (movieService.addMovie(movie))
-            return ResponseEntity.ok().build();
-        else
+
+    @PostMapping(path = "")
+    public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
+                                   @RequestParam String description, @RequestParam String picturePath,
+                                   @RequestParam double rating, @RequestParam double price, HttpSession session) {
+        if (((User) session.getAttribute("loggedUser")).getUserType().equals(UserType.ADMIN)) {
+            Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
+            if (movieService.addMovie(movie))
+                return ResponseEntity.ok().build();
+            else
+                return ResponseEntity.badRequest().build();
+        } else {
             return ResponseEntity.badRequest().build();
+        }
     }
-    @PutMapping(path = "/movie/{movieId}")
-    public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative,@RequestParam int yearOfRelease,
-                                    @RequestParam String description,@RequestParam String picturePath,
-                                    @RequestParam double rating,@RequestParam double price, HttpSession session) {
-        Movie movie=new Movie(nameRussian,nameNative,yearOfRelease,description,price,rating,picturePath);
-        movie.setId(movieId);
-        if (movieService.editMovie(movie))
-            return ResponseEntity.ok().build();
-        else
+
+    @PutMapping(path = "/{movieId}")
+    public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
+                                    @RequestParam String description, @RequestParam String picturePath,
+                                    @RequestParam double rating, @RequestParam double price, HttpSession session) {
+        if (((User) session.getAttribute("loggedUser")).getUserType().equals(UserType.ADMIN)) {
+            Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
+            movie.setId(movieId);
+            if (movieService.editMovie(movie))
+                return ResponseEntity.ok().build();
+            else
+                return ResponseEntity.badRequest().build();
+        } else {
             return ResponseEntity.badRequest().build();
+        }
     }
 
 }

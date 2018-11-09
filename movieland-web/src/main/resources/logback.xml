@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-<property resource="properties/application.properties"/>
-<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>log/movieland.log</file>
-    <append>true</append>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-        <fileNamePattern>log/movieland_%d{yyyy-MM-dd}.log.%i</fileNamePattern>
-        <maxHistory>10</maxHistory>
-        <timeBasedFileNamingAndTriggeringPolicy
-                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-            <maxFileSize>5MB</maxFileSize>
-        </timeBasedFileNamingAndTriggeringPolicy>
-    </rollingPolicy>
-    <encoder>
-        <pattern>%d{ISO8601} [%-5p][%-16.16t][%20c{-4}]-%m%n</pattern>
-    </encoder>
-</appender>
-<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-        <pattern>%d{ISO8601} [%-5p][%-16.16t][%20c{-4}]-%m%n</pattern>
-    </encoder>
-</appender>
-<root level="DEBUG">
-    <appender-ref ref="FILE"/>
-    <appender-ref ref="CONSOLE"/>
-</root>
+    <property resource="properties/application.properties"/>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/movieland.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/movieland_%d{yyyy-MM-dd}.log.%i</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>5MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %X{requestId} %X{loggedUser} %-5level %logger{40}-%m%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %X{requestId} %X{loggedUser} %-5level %logger{40}-%m%n</pattern>
+        </encoder>
+    </appender>
+    <root level="DEBUG">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
 </configuration>

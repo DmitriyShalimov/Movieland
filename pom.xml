@@ -12,8 +12,7 @@
         <module>movieland-persistence-api</module>
         <module>movieland-persistence-jdbc</module>
         <module>movieland-service-api</module>
-        <module>movieland-service-default</module>
-        <module>movieland-service-default</module>
+
         <module>movieland-web</module>
         <module>movieland-service-default</module>
     </modules>
@@ -91,7 +90,12 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.11</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -16,6 +16,7 @@ public class DefaultUserService implements UserService {
     public DefaultUserService(UserDao userDao) {
         this.userDao = userDao;
     }
+
     @Override
     public Optional<User> getByEmail(String email) {
         return userDao.getByEmail(email);

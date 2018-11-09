@@ -26,16 +26,9 @@ public class CurrencyCacheDao {
     @PostConstruct
     @Scheduled(fixedDelayString = "${cache.update.time}")
     private void getRatesFromAPI() {
-        String resultJson;
         try (InputStream inputStream = new URL("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json").openStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            resultJson = stringBuilder.toString();
-            JsonNode jsonNode = OBJECT_MAPPER.readTree(resultJson);
+            JsonNode jsonNode = OBJECT_MAPPER.readTree(reader);
             for (JsonNode node : jsonNode) {
                 if ("\"USD\"".equals(node.findValue("cc").toString())) {
                     rates.put("USD", Double.valueOf(node.findValue("rate").toString()));

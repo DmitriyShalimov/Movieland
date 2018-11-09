@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -24,7 +25,7 @@ import static java.lang.System.currentTimeMillis;
 public class DefaultSecurityService implements SecurityService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final UserService userService;
-    private final Map<UUID, HttpSession> sessions = new HashMap<>();
+    private final Map<UUID, HttpSession> sessions = new ConcurrentHashMap<>();
 
     @Autowired
     public DefaultSecurityService(UserService userService) {
@@ -34,9 +35,9 @@ public class DefaultSecurityService implements SecurityService {
     @Override
     public Optional<User> authenticate(String email, String password, HttpSession session) {
         Optional<User> optionalUser = userService.getByEmail(email);
-        optionalUser.map(user -> checkPassword(optionalUser.get(), password));
-        optionalUser.ifPresent(user -> saveSession(optionalUser.get(), session));
-        return optionalUser;
+        Optional<User> optionalCheckedUser = optionalUser.map(user -> checkPassword(user, password));
+        optionalCheckedUser.ifPresent(user -> saveSession(user, session));
+        return optionalCheckedUser;
     }
 
     @Override
@@ -63,16 +64,16 @@ public class DefaultSecurityService implements SecurityService {
         sessions.put(uuid, session);
     }
 
-    @Scheduled(fixedDelayString = "${cache.update.time}")
+    @Scheduled(fixedDelayString = "${session.cache.update.time}")
     private void invalidate() {
-      Iterator<HttpSession> iterator= sessions.values().iterator();
-      while (iterator.hasNext()){
-          HttpSession session= iterator.next();
-          if(currentTimeMillis()-session.getCreationTime()>7200000) {
-              session.invalidate();
-              iterator.remove();
-          }
-      }
+        Iterator<HttpSession> iterator = sessions.values().iterator();
+        while (iterator.hasNext()) {
+            HttpSession session = iterator.next();
+            if (currentTimeMillis() - session.getCreationTime() > 7200000) {
+                session.invalidate();
+                iterator.remove();
+            }
+        }
     }
 
 }

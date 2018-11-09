@@ -10,10 +10,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.shalimov.movieland.web.controller")
-public class ApiConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggingInterceptor())
-                .addPathPatterns("/api/v1/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login", "/registration", "/assets/**");
+
     }
 }
