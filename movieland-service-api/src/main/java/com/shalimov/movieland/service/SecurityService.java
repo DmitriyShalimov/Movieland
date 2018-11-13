@@ -6,7 +6,9 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 public interface SecurityService {
-    Optional<User> authenticate(String email, String password, HttpSession session);
+    Optional<User> authenticate(String email, String password);
 
-  void logout(HttpSession session);
+    void logout(String token);
+
+    Optional<User> getUser(String token);
 }

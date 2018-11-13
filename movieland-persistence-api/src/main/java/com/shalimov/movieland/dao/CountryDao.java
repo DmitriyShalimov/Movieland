@@ -8,4 +8,6 @@ import java.util.List;
 public interface CountryDao {
 
     List<Country> getAll();
+
+    List<Country> getCountryForMovie(int id);
 }

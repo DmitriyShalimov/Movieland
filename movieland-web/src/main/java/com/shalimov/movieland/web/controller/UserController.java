@@ -23,10 +23,10 @@ public class UserController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<User> doLogin(@RequestParam String email, @RequestParam String password, HttpSession session) {
-        Optional<User> optionalUser = securityService.authenticate(email, password, session);
+        Optional<User> optionalUser = securityService.authenticate(email, password);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            session.setAttribute("loggedUser", user);
+            session.setAttribute("loggedUser", user.getUuid());
             logger.info("User {} logged in", user.getNickName());
             return ResponseEntity.ok(user);
         }
@@ -36,7 +36,6 @@ public class UserController {
 
     @DeleteMapping(value = "/logout")
     public void logout(HttpSession session) {
-        securityService.logout(session);
+        securityService.logout(String.valueOf(session.getAttribute("loggedUser")));
     }
-
 }

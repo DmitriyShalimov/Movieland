@@ -27,16 +27,5 @@ public class WebAppInitializer implements WebApplicationInitializer {
         ServletRegistration.Dynamic apiRegister = servletContext.addServlet("Api Servlet", apiDispatcher);
         apiRegister.setLoadOnStartup(1);
         apiRegister.addMapping("/v1/*");
-
-        //web context
-        AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
-        webContext.register(WebConfig.class);
-
-        //dispatcher for web
-        DispatcherServlet webDispatcher = new DispatcherServlet(webContext);
-        ServletRegistration.Dynamic webRegister = servletContext.addServlet("Web Servlet", webDispatcher);
-        webRegister.setLoadOnStartup(1);
-        webRegister.addMapping("/v1/*");
-
     }
 }

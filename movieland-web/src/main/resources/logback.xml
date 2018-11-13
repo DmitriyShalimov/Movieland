@@ -2,7 +2,7 @@
 <configuration>
     <property resource="properties/application.properties"/>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/movieland.log</file>
+        <file>C:/ideaproject/movieland/log/movieland.log</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>log/movieland_%d{yyyy-MM-dd}.log.%i</fileNamePattern>

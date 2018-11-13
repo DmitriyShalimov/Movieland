@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -66,32 +65,24 @@ public class MovieController {
     @PostMapping(path = "")
     public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
                                    @RequestParam String description, @RequestParam String picturePath,
-                                   @RequestParam double rating, @RequestParam double price, HttpSession session) {
-        if (((User) session.getAttribute("loggedUser")).getUserType().equals(UserType.ADMIN)) {
-            Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
-            if (movieService.addMovie(movie))
-                return ResponseEntity.ok().build();
-            else
-                return ResponseEntity.badRequest().build();
-        } else {
+                                   @RequestParam double rating, @RequestParam double price) {
+        Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
+        if (movieService.addMovie(movie))
+            return ResponseEntity.ok().build();
+        else
             return ResponseEntity.badRequest().build();
-        }
     }
 
     @PutMapping(path = "/{movieId}")
     public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
                                     @RequestParam String description, @RequestParam String picturePath,
-                                    @RequestParam double rating, @RequestParam double price, HttpSession session) {
-        if (((User) session.getAttribute("loggedUser")).getUserType().equals(UserType.ADMIN)) {
-            Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
-            movie.setId(movieId);
-            if (movieService.editMovie(movie))
-                return ResponseEntity.ok().build();
-            else
-                return ResponseEntity.badRequest().build();
-        } else {
+                                    @RequestParam double rating, @RequestParam double price) {
+        Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
+        movie.setId(movieId);
+        if (movieService.editMovie(movie))
+            return ResponseEntity.ok().build();
+        else
             return ResponseEntity.badRequest().build();
-        }
     }
 
 }

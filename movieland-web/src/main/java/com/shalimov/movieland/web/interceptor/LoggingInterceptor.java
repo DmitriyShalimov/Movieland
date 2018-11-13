@@ -12,7 +12,7 @@ import java.util.UUID;
 public class LoggingInterceptor extends HandlerInterceptorAdapter {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)  {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("loggedUser");

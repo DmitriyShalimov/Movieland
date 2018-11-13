@@ -5,7 +5,6 @@ import com.shalimov.movieland.entity.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ import java.util.List;
 
 
 @Service
-@PropertySource("classpath:jdbc.application.properties")
 public class CachedCountryDao implements CountryDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final CountryDao jdbcCountryDao;
@@ -31,8 +29,14 @@ public class CachedCountryDao implements CountryDao {
     public List<Country> getAll() {
         return new ArrayList<>(allCountries);
     }
+
+    @Override
+    public List<Country> getCountryForMovie(int id) {
+        return null;
+    }
+
     @PostConstruct
-    @Scheduled(fixedDelayString = "${cache.update.time}")
+    @Scheduled(fixedDelayString = "${cache.update.time}", initialDelayString = "${cache.update.time}")
     private void invalidate() {
         logger.info("Update country cache");
         allCountries = jdbcCountryDao.getAll();
