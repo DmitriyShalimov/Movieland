@@ -35,6 +35,16 @@ public class CachedCountryDao implements CountryDao {
         return null;
     }
 
+    @Override
+    public boolean addCountryForMovie(int countryId, int id) {
+        return false;
+    }
+
+    @Override
+    public void removeAllCountriesForMovie(int id) {
+
+    }
+
     @PostConstruct
     @Scheduled(fixedDelayString = "${cache.update.time}", initialDelayString = "${cache.update.time}")
     private void invalidate() {

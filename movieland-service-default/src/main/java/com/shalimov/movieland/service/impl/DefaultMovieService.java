@@ -8,6 +8,7 @@ import com.shalimov.movieland.service.cache.CurrencyCacheService;
 import com.shalimov.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -74,13 +75,36 @@ public class DefaultMovieService implements MovieService {
         return movie;
     }
 
+    @Transactional
     @Override
-    public boolean editMovie(Movie movie) {
+    public boolean editMovie(Movie movie, int[] genres, int[] countries) {
+        jdbcGenreDao.removeAllGenresForMovie(movie.getId());
+        jdbcCountryDao.removeAllCountriesForMovie(movie.getId());
+        for (int genreId : genres) {
+            if (!jdbcGenreDao.addGenreForMovie(genreId, movie.getId())) {
+                return false;
+            }
+        }
+        for (int countryId : countries) {
+            if (!jdbcCountryDao.addCountryForMovie(countryId, movie.getId())) {
+                return false;
+            }
+        }
         return movieDao.editMovie(movie);
     }
 
     @Override
-    public boolean addMovie(Movie movie) {
+    public boolean addMovie(Movie movie, int[] genres, int[] countries) {
+        for (int genreId : genres) {
+            if (!jdbcGenreDao.addGenreForMovie(genreId, movie.getId())) {
+                return false;
+            }
+        }
+        for (int countryId : countries) {
+            if (!jdbcCountryDao.addCountryForMovie(countryId, movie.getId())) {
+                return false;
+            }
+        }
         return movieDao.addMovie(movie);
     }
 }

@@ -64,10 +64,10 @@ public class MovieController {
 
     @PostMapping(path = "")
     public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
-                                   @RequestParam String description, @RequestParam String picturePath,
-                                   @RequestParam double rating, @RequestParam double price) {
+                                   @RequestParam String description, @RequestParam String picturePath, @RequestParam double rating,
+                                   @RequestParam double price, @RequestParam int[] genres, @RequestParam int[] countries) {
         Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
-        if (movieService.addMovie(movie))
+        if (movieService.addMovie(movie,genres,countries))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.badRequest().build();
@@ -76,10 +76,10 @@ public class MovieController {
     @PutMapping(path = "/{movieId}")
     public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
                                     @RequestParam String description, @RequestParam String picturePath,
-                                    @RequestParam double rating, @RequestParam double price) {
+                                    @RequestParam double rating, @RequestParam double price, @RequestParam int[] genres, @RequestParam int[] countries) {
         Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
         movie.setId(movieId);
-        if (movieService.editMovie(movie))
+        if (movieService.editMovie(movie,genres,countries))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.badRequest().build();

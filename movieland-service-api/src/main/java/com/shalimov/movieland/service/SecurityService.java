@@ -2,7 +2,6 @@ package com.shalimov.movieland.service;
 
 import com.shalimov.movieland.entity.User;
 
-import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 public interface SecurityService {

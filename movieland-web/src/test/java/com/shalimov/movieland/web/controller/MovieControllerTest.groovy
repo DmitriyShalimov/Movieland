@@ -45,7 +45,7 @@ class MovieControllerTest {
         Mockito.when(movieService.getRandomMovies((MovieRequest) Mockito.notNull())).thenReturn(movies)
         Mockito.when(movieService.getMoviesByGenre(Mockito.anyInt(), (MovieRequest) Mockito.notNull())).thenReturn(movies)
         Mockito.when(movieService.getMovieById(1, Currency.USD)).thenReturn(movie)
-        Mockito.when(movieService.addMovie((Movie) Mockito.notNull())).thenReturn(true)
+        Mockito.when(movieService.addMovie((Movie) Mockito.notNull(), genres, countries)).thenReturn(true)
         Mockito.when(movieService.editMovie((Movie) Mockito.notNull())).thenReturn(true)
         MockitoAnnotations.initMocks(this)
         this.mockMvc = MockMvcBuilders.standaloneSetup(movieController).build()

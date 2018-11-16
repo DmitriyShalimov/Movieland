@@ -15,7 +15,7 @@ public interface MovieService {
 
     Movie getMovieById(int movieId, Currency currency);
 
-    boolean editMovie(Movie movie);
+    boolean editMovie(Movie movie, int[] genres, int[] countries);
 
-    boolean addMovie(Movie movie);
+    boolean addMovie(Movie movie, int[] genres, int[] countries);
 }

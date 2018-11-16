@@ -34,6 +34,16 @@ public class CachedGenreDao implements GenreDao {
         return null;
     }
 
+    @Override
+    public boolean addGenreForMovie(int genreId, int id) {
+        return false;
+    }
+
+    @Override
+    public void removeAllGenresForMovie(int id) {
+
+    }
+
     @PostConstruct
     @Scheduled(fixedDelayString = "${cache.update.time}", initialDelayString = "${cache.update.time}")
     private void invalidate() {
