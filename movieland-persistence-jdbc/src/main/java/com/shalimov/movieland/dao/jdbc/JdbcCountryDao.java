@@ -57,6 +57,6 @@ public class JdbcCountryDao implements CountryDao {
 
     @Override
     public void removeAllCountriesForMovie(int movieId) {
-        namedParameterJdbcTemplate.update(DELETE_COUNTRY_FOR_MOVIE, new MapSqlParameterSource("movie", movieId));
+        namedParameterJdbcTemplate.update(DELETE_COUNTRY_FOR_MOVIE, new MapSqlParameterSource("movieId", movieId));
     }
 }

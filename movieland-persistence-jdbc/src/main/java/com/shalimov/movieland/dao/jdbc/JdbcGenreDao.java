@@ -57,6 +57,6 @@ public class JdbcGenreDao implements GenreDao {
 
     @Override
     public void removeAllGenresForMovie(int movieId) {
-        namedParameterJdbcTemplate.update(DELETE_GENRE_FOR_MOVIE, new MapSqlParameterSource("movie", movieId));
+        namedParameterJdbcTemplate.update(DELETE_GENRE_FOR_MOVIE, new MapSqlParameterSource("movieId", movieId));
     }
 }

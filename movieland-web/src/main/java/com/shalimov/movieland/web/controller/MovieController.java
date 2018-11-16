@@ -2,6 +2,7 @@ package com.shalimov.movieland.web.controller;
 
 import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.service.MovieService;
+import com.shalimov.movieland.web.annotation.ProtectedBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,27 +63,46 @@ public class MovieController {
         return movie;
     }
 
+    @ProtectedBy(UserType.ADMIN)
     @PostMapping(path = "")
     public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
                                    @RequestParam String description, @RequestParam String picturePath, @RequestParam double rating,
                                    @RequestParam double price, @RequestParam int[] genres, @RequestParam int[] countries) {
         Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
-        if (movieService.addMovie(movie,genres,countries))
+        if (movieService.addMovie(movie, genres, countries))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.badRequest().build();
     }
 
+    @ProtectedBy(UserType.ADMIN)
     @PutMapping(path = "/{movieId}")
     public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
                                     @RequestParam String description, @RequestParam String picturePath,
                                     @RequestParam double rating, @RequestParam double price, @RequestParam int[] genres, @RequestParam int[] countries) {
         Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
         movie.setId(movieId);
-        if (movieService.editMovie(movie,genres,countries))
+        if (movieService.editMovie(movie, genres, countries))
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.badRequest().build();
     }
 
+    @ProtectedBy(UserType.ADMIN)
+    @DeleteMapping(value = "/{movieId}")
+    public ResponseEntity markMovieToDelete(@PathVariable int movieId) {
+        logger.info("Mark to delete movie with id {}", movieId);
+        movieService.markMovieToDelete(movieId);
+        logger.info("Movie  is marked");
+        return ResponseEntity.ok().build();
+    }
+
+    @ProtectedBy(UserType.ADMIN)
+    @PostMapping(value = "/{movieId}/unmark")
+    public ResponseEntity unmarkMovieToDelete(@PathVariable int movieId) {
+        logger.info("Unmark to delete movie with id {}", movieId);
+        movieService.unmarkMovieToDelete(movieId);
+        logger.info("Movie  is unmarked");
+        return ResponseEntity.ok().build();
+    }
 }

@@ -19,4 +19,6 @@ public interface MovieDao {
     boolean editMovie(Movie movie);
 
     boolean addMovie(Movie movie);
+
+    void deleteMovie(Integer movieId);
 }

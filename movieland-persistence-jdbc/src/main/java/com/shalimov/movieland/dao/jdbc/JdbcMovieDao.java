@@ -27,6 +27,7 @@ public class JdbcMovieDao implements MovieDao {
     private final String getMovieByIdSql = " WHERE m.id=:movieId;";
     private final String getRandomMoviesSql = " order by random() limit 3;";
     private final String getMoviesByGenre = " WHERE g.id=:genreId";
+    private final String DELETE_MOVIE_SQL = "DELETE FROM movie WHERE id =:id;";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -79,6 +80,11 @@ public class JdbcMovieDao implements MovieDao {
         int result = namedParameterJdbcTemplate.update(ADD_NEW_MOVIE_SQL, params);
         logger.info("Movie  saved");
         return result == 1;
+    }
+
+    @Override
+    public void deleteMovie(Integer movieId) {
+        namedParameterJdbcTemplate.update(DELETE_MOVIE_SQL, new MapSqlParameterSource("id", movieId));
     }
 
     @Override

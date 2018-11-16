@@ -7,10 +7,12 @@ import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.service.cache.CurrencyCacheService;
 import com.shalimov.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class DefaultMovieService implements MovieService {
@@ -18,6 +20,7 @@ public class DefaultMovieService implements MovieService {
     private final CurrencyCacheService currencyCache;
     private final CountryDao jdbcCountryDao;
     private final GenreDao jdbcGenreDao;
+    private final List<Integer> moviesToDelete=new CopyOnWriteArrayList<>();
 
     @Autowired
     public DefaultMovieService(MovieDao movieDao, CurrencyCacheService currencyCache, CountryDao jdbcCountryDao, GenreDao jdbcGenreDao) {
@@ -106,5 +109,24 @@ public class DefaultMovieService implements MovieService {
             }
         }
         return movieDao.addMovie(movie);
+    }
+
+    @Override
+    public void markMovieToDelete(int movieId) {
+        moviesToDelete.add(movieId);
+    }
+
+    @Override
+    public void unmarkMovieToDelete(int movieId) {
+        moviesToDelete.removeIf(integer -> movieId == integer);
+    }
+    @Scheduled(cron = "59 59 23 * * ?")
+    private void removeMovies(){
+        for(Integer movieId:moviesToDelete){
+            movieDao.deleteMovie(movieId);
+            jdbcGenreDao.removeAllGenresForMovie(movieId);
+            jdbcCountryDao.removeAllCountriesForMovie(movieId);
+        }
+        moviesToDelete.clear();
     }
 }

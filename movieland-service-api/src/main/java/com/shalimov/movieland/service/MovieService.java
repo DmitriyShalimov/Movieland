@@ -18,4 +18,8 @@ public interface MovieService {
     boolean editMovie(Movie movie, int[] genres, int[] countries);
 
     boolean addMovie(Movie movie, int[] genres, int[] countries);
+
+    void markMovieToDelete(int movieId);
+
+    void unmarkMovieToDelete(int movieId);
 }
