@@ -21,8 +21,26 @@
             <pattern>%date{HH:mm:ss.SSS} [%thread] %X{requestId} %X{loggedUser} %-5level %logger{40}-%m%n</pattern>
         </encoder>
     </appender>
+    <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+        <smtpHost>smtp.gmail.com</smtpHost>
+        <smtpPort>587</smtpPort>
+        <STARTTLS>true</STARTTLS>
+        <username>movielandemailsender@gmail.com</username>
+        <password>!@#$1234qwer</password>
+
+        <to>dmitriyshalimov@gmail.com</to>
+        <from>movielandemailsender@gmail.com</from>
+        <subject>MOVIELAND ERROR MESSAGE: %m</subject>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %X{requestId} %X{loggedUser} %-5level %logger{40}-%m%n</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="EMAIL"/>
     </root>
 </configuration>
