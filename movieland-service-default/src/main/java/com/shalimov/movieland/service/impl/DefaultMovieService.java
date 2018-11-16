@@ -20,7 +20,7 @@ public class DefaultMovieService implements MovieService {
     private final CurrencyCacheService currencyCache;
     private final CountryDao jdbcCountryDao;
     private final GenreDao jdbcGenreDao;
-    private final List<Integer> moviesToDelete=new CopyOnWriteArrayList<>();
+    private final List<Integer> moviesToDelete = new CopyOnWriteArrayList<>();
 
     @Autowired
     public DefaultMovieService(MovieDao movieDao, CurrencyCacheService currencyCache, CountryDao jdbcCountryDao, GenreDao jdbcGenreDao) {
@@ -120,9 +120,17 @@ public class DefaultMovieService implements MovieService {
     public void unmarkMovieToDelete(int movieId) {
         moviesToDelete.removeIf(integer -> movieId == integer);
     }
+
+    @Override
+    public List<Movie> getMoviesByMask(String mask) {
+        List<Movie> movies = movieDao.getMoviesByMask(mask);
+        setGenresAndCountries(movies);
+        return movies;
+    }
+
     @Scheduled(cron = "59 59 23 * * ?")
-    private void removeMovies(){
-        for(Integer movieId:moviesToDelete){
+    private void removeMovies() {
+        for (Integer movieId : moviesToDelete) {
             movieDao.deleteMovie(movieId);
             jdbcGenreDao.removeAllGenresForMovie(movieId);
             jdbcCountryDao.removeAllCountriesForMovie(movieId);

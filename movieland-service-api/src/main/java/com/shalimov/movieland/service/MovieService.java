@@ -22,4 +22,6 @@ public interface MovieService {
     void markMovieToDelete(int movieId);
 
     void unmarkMovieToDelete(int movieId);
+
+    List<Movie> getMoviesByMask(String mask);
 }

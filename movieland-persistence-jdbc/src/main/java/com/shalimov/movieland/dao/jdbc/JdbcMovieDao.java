@@ -20,14 +20,15 @@ public class JdbcMovieDao implements MovieDao {
 
     private final String getMoviesSql = "SELECT m.id, m.name_russian, m.name_native, m.year_of_release, m.description, m.rating, m.price, " +
             "m.picture_path FROM movie AS m";
-    private final String ADD_NEW_MOVIE_SQL = "INSERT INTO movie (name_russian,name_native,year_of_release,description,rating" +
+    private final String addNewMovieSql = "INSERT INTO movie (name_russian,name_native,year_of_release,description,rating" +
             ",price,picture_path) VALUES(:name_russian, :name_native, :year_of_release,:description,:rating,:price,:picture_path)";
-    private final String EDIT_MOVIE_SQL = "UPDATE movie SET name_russian=:name_russian,name_native=:name_native," +
+    private final String editMovieSql = "UPDATE movie SET name_russian=:name_russian,name_native=:name_native," +
             "year_of_release=year_of_release,description=:description,rating=:rating,price=:price,picture_path=:picture_path WHERE id=:id";
     private final String getMovieByIdSql = " WHERE m.id=:movieId;";
     private final String getRandomMoviesSql = " order by random() limit 3;";
     private final String getMoviesByGenre = " WHERE g.id=:genreId";
-    private final String DELETE_MOVIE_SQL = "DELETE FROM movie WHERE id =:id;";
+    private final String deleteMovieSql = "DELETE FROM movie WHERE id =:id;";
+    private final String getByMask = " WHERE LOWER (m.name_native) LIKE LOWER(:mask) OR LOWER(m.name_russian) LIKE LOWER(:mask)";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -77,14 +78,22 @@ public class JdbcMovieDao implements MovieDao {
         params.addValue("rating", movie.getRating());
         params.addValue("price", movie.getPrice());
         params.addValue("picture_path", movie.getPicturePath());
-        int result = namedParameterJdbcTemplate.update(ADD_NEW_MOVIE_SQL, params);
+        int result = namedParameterJdbcTemplate.update(addNewMovieSql, params);
         logger.info("Movie  saved");
         return result == 1;
     }
 
     @Override
     public void deleteMovie(Integer movieId) {
-        namedParameterJdbcTemplate.update(DELETE_MOVIE_SQL, new MapSqlParameterSource("id", movieId));
+        namedParameterJdbcTemplate.update(deleteMovieSql , new MapSqlParameterSource("id", movieId));
+    }
+
+    @Override
+    public List<Movie> getMoviesByMask(String mask) {
+        logger.info("start receiving movies by mask {}", mask);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("mask", "%" + mask + "%");
+        return namedParameterJdbcTemplate.query(getMoviesSql+getByMask, params, MOVIE_ROW_MAPPER);
     }
 
     @Override
@@ -99,7 +108,7 @@ public class JdbcMovieDao implements MovieDao {
         params.addValue("rating", movie.getRating());
         params.addValue("price", movie.getPrice());
         params.addValue("picture_path", movie.getPicturePath());
-        int result = namedParameterJdbcTemplate.update(EDIT_MOVIE_SQL, params);
+        int result = namedParameterJdbcTemplate.update(editMovieSql , params);
         logger.info("Movie  update");
         return result == 1;
     }

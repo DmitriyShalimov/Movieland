@@ -105,4 +105,13 @@ public class MovieController {
         logger.info("Movie  is unmarked");
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping(value = "/search")
+    public List<Movie> getMoviesByMask(@RequestParam String mask) {
+        logger.info("Retrieving movies by mask");
+        MovieRequest movieRequest = new MovieRequest();
+        List<Movie> movies = movieService.getMoviesByMask(mask);
+        logger.info("Movies  are {}", movies);
+        return movies;
+    }
 }

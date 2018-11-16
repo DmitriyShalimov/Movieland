@@ -21,4 +21,6 @@ public interface MovieDao {
     boolean addMovie(Movie movie);
 
     void deleteMovie(Integer movieId);
+
+    List<Movie> getMoviesByMask(String mask);
 }
