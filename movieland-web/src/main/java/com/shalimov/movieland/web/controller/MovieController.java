@@ -23,33 +23,36 @@ public class MovieController {
     }
 
     @GetMapping(value = "")
-    public List<Movie> getAllMovies(@RequestParam(value = "rating", required = false) SortType ratingOrder, @RequestParam(value = "price", required = false) SortType priceOrder) {
+    public List<Movie> getAllMovies(@RequestParam(value = "rating", required = false) SortType ratingOrder,
+                                    @RequestParam(value = "price", required = false) SortType priceOrder,
+                                    @RequestParam(value = "page", defaultValue = "1") int page) {
         logger.info("Retrieving all movies");
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setPriceOrder(priceOrder);
         movieRequest.setRatingOrder(ratingOrder);
+        movieRequest.setPage(page);
         List<Movie> movies = movieService.getAll(movieRequest);
         logger.info("Movies  are {}", movies);
         return movies;
     }
 
     @GetMapping(value = "/random")
-    public List<Movie> getRandomMovies(@RequestParam(value = "rating", required = false) SortType ratingOrder, @RequestParam(value = "price", required = false) SortType priceOrder) {
+    public List<Movie> getRandomMovies() {
         logger.info("Retrieving Random movies");
-        MovieRequest movieRequest = new MovieRequest();
-        movieRequest.setPriceOrder(priceOrder);
-        movieRequest.setRatingOrder(ratingOrder);
-        List<Movie> movies = movieService.getRandomMovies(movieRequest);
+        List<Movie> movies = movieService.getRandomMovies();
         logger.info("Movies  are {}", movies);
         return movies;
     }
 
     @GetMapping(value = "/genre/{genreId}")
-    public List<Movie> getMoviesByGenre(@PathVariable int genreId, @RequestParam(value = "rating", required = false) SortType ratingOrder, @RequestParam(value = "price", required = false) SortType priceOrder) {
+    public List<Movie> getMoviesByGenre(@PathVariable int genreId, @RequestParam(value = "rating", required = false) SortType ratingOrder,
+                                        @RequestParam(value = "price", required = false) SortType priceOrder,
+                                        @RequestParam(value = "page", defaultValue = "1") int page) {
         logger.info("Retrieving all movies from genre with id {}", genreId);
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setPriceOrder(priceOrder);
         movieRequest.setRatingOrder(ratingOrder);
+        movieRequest.setPage(page);
         List<Movie> movies = movieService.getMoviesByGenre(genreId, movieRequest);
         logger.info("Movies  are {}", movies);
         return movies;
@@ -107,9 +110,10 @@ public class MovieController {
     }
 
     @GetMapping(value = "/search")
-    public List<Movie> getMoviesByMask(@RequestParam String mask) {
+    public List<Movie> getMoviesByMask(@RequestParam String mask, @RequestParam(value = "page", defaultValue = "1") int page) {
         logger.info("Retrieving movies by mask");
         MovieRequest movieRequest = new MovieRequest();
+        movieRequest.setPage(page);
         List<Movie> movies = movieService.getMoviesByMask(mask);
         logger.info("Movies  are {}", movies);
         return movies;

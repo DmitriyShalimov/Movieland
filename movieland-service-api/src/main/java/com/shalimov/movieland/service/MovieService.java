@@ -9,7 +9,7 @@ import java.util.List;
 public interface MovieService {
     List<Movie> getAll(MovieRequest movieRequest);
 
-    List<Movie> getRandomMovies(MovieRequest movieRequest);
+    List<Movie> getRandomMovies();
 
     List<Movie> getMoviesByGenre(int genreId, MovieRequest movieRequest);
 

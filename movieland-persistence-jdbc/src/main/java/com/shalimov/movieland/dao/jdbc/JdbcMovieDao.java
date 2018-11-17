@@ -29,6 +29,8 @@ public class JdbcMovieDao implements MovieDao {
     private final String getMoviesByGenre = " WHERE g.id=:genreId";
     private final String deleteMovieSql = "DELETE FROM movie WHERE id =:id;";
     private final String getByMask = " WHERE LOWER (m.name_native) LIKE LOWER(:mask) OR LOWER(m.name_russian) LIKE LOWER(:mask)";
+    private final String limit = " LIMIT :moviesPerPage OFFSET :offset";
+    private final int moviesPerPage = 5;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -41,8 +43,10 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public List<Movie> getAll(MovieRequest movieRequest) {
         logger.info("start receiving all movies");
-
-        return namedParameterJdbcTemplate.query(getMoviesSql + addSortingSql(movieRequest), MOVIE_ROW_MAPPER);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("offset", (movieRequest.getPage() - 1) * moviesPerPage);
+        params.addValue("moviesPerPage", moviesPerPage);
+        return namedParameterJdbcTemplate.query(getMoviesSql + addSortingSql(movieRequest) + limit, params, MOVIE_ROW_MAPPER);
     }
 
     @Override
@@ -56,7 +60,8 @@ public class JdbcMovieDao implements MovieDao {
         logger.info("start receiving movies by genre with id {}", genreId);
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("genreId", genreId);
-        return namedParameterJdbcTemplate.query(getMoviesSql + getMoviesByGenre + addSortingSql(movieRequest), params, MOVIE_ROW_MAPPER);
+        params.addValue("moviesPerPage", moviesPerPage);
+        return namedParameterJdbcTemplate.query(getMoviesSql + getMoviesByGenre + addSortingSql(movieRequest) + limit, params, MOVIE_ROW_MAPPER);
     }
 
     @Override
@@ -85,7 +90,7 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public void deleteMovie(Integer movieId) {
-        namedParameterJdbcTemplate.update(deleteMovieSql , new MapSqlParameterSource("id", movieId));
+        namedParameterJdbcTemplate.update(deleteMovieSql, new MapSqlParameterSource("id", movieId));
     }
 
     @Override
@@ -93,7 +98,8 @@ public class JdbcMovieDao implements MovieDao {
         logger.info("start receiving movies by mask {}", mask);
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("mask", "%" + mask + "%");
-        return namedParameterJdbcTemplate.query(getMoviesSql+getByMask, params, MOVIE_ROW_MAPPER);
+        params.addValue("moviesPerPage", moviesPerPage);
+        return namedParameterJdbcTemplate.query(getMoviesSql + getByMask + limit, params, MOVIE_ROW_MAPPER);
     }
 
     @Override
@@ -108,7 +114,7 @@ public class JdbcMovieDao implements MovieDao {
         params.addValue("rating", movie.getRating());
         params.addValue("price", movie.getPrice());
         params.addValue("picture_path", movie.getPicturePath());
-        int result = namedParameterJdbcTemplate.update(editMovieSql , params);
+        int result = namedParameterJdbcTemplate.update(editMovieSql, params);
         logger.info("Movie  update");
         return result == 1;
     }

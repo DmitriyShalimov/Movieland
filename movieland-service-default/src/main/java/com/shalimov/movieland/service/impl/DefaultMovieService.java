@@ -38,7 +38,7 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<Movie> getRandomMovies(MovieRequest movieRequest) {
+    public List<Movie> getRandomMovies() {
         List<Movie> movies = movieDao.getRandomMovies();
         setGenresAndCountries(movies);
         return movies;
