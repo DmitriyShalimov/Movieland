@@ -2,6 +2,7 @@ package com.shalimov.movieland.web.interceptor;
 
 import com.shalimov.movieland.entity.User;
 import org.slf4j.MDC;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,5 +24,10 @@ public class LoggingInterceptor extends HandlerInterceptorAdapter {
         }
         MDC.put("requestId", UUID.randomUUID().toString());
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+       MDC.clear();
     }
 }

@@ -3,6 +3,7 @@ package com.shalimov.movieland.dao;
 
 
 import com.shalimov.movieland.entity.Genre;
+import com.shalimov.movieland.entity.Movie;
 
 import java.util.List;
 
@@ -11,7 +12,9 @@ public interface GenreDao {
 
     List<Genre> getGenreForMovie(int id);
 
-    boolean addGenreForMovie(int genreId, int movieId);
+    void removeAllGenresForMovie(List<Integer>  movieIds);
 
-    void removeAllGenresForMovie(int movieId);
+    void enrich(List<Movie> movies, List<Integer> movieIds);
+
+    void addGenresForMovie(List<Genre> genres, int movieId);
 }

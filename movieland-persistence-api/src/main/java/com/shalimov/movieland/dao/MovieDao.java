@@ -18,9 +18,10 @@ public interface MovieDao {
 
     boolean editMovie(Movie movie);
 
-    boolean addMovie(Movie movie);
+    int addMovie(Movie movie);
 
-    void deleteMovie(Integer movieId);
+    void deleteMovie(List<Integer> movieId);
 
-    List<Movie> getMoviesByMask(String mask);
+    List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest);
+
 }

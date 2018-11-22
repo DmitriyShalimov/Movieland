@@ -32,16 +32,18 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
             User user;
             Optional<User> optionalUser = securityService.getUser(token);
             if (optionalUser.isPresent()) {
-                user=optionalUser.get();
-                if(user.getUserType().equals(UserType.ADMIN)){
+                user = optionalUser.get();
+                if (user.getUserType().equals(UserType.ADMIN)) {
                     UserHandler.setUser(user);
                     return true;
-                }else{
+                } else {
                     UserType expectedType = protectedByAnnotation.value();
-                    if(expectedType.equals(UserType.USER)){
+                    if (expectedType.equals(UserType.USER)) {
                         UserHandler.setUser(user);
                         return true;
-                    }else return false;
+                    } else {
+                        return false;
+                    }
                 }
             } else {
                 return false;

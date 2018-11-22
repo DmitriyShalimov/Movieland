@@ -34,19 +34,13 @@
             </plugin>
         </plugins>
     </build>
-
+<dependencyManagement>
     <dependencies>
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.shalimov.movieland</groupId>
-                    <artifactId>movieland-web</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -110,5 +104,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+</dependencyManagement>
 
 </project>

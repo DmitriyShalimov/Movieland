@@ -8,6 +8,7 @@ import com.shalimov.movieland.entity.SortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,7 +22,7 @@ public class JdbcMovieDao implements MovieDao {
     private final String getMoviesSql = "SELECT m.id, m.name_russian, m.name_native, m.year_of_release, m.description, m.rating, m.price, " +
             "m.picture_path FROM movie AS m";
     private final String addNewMovieSql = "INSERT INTO movie (name_russian,name_native,year_of_release,description,rating" +
-            ",price,picture_path) VALUES(:name_russian, :name_native, :year_of_release,:description,:rating,:price,:picture_path)";
+            ",price,picture_path) VALUES(:name_russian, :name_native, :year_of_release,:description,:rating,:price,:picture_path) RETURNING id";
     private final String editMovieSql = "UPDATE movie SET name_russian=:name_russian,name_native=:name_native," +
             "year_of_release=year_of_release,description=:description,rating=:rating,price=:price,picture_path=:picture_path WHERE id=:id";
     private final String getMovieByIdSql = " WHERE m.id=:movieId;";
@@ -30,7 +31,8 @@ public class JdbcMovieDao implements MovieDao {
     private final String deleteMovieSql = "DELETE FROM movie WHERE id =:id;";
     private final String getByMask = " WHERE LOWER (m.name_native) LIKE LOWER(:mask) OR LOWER(m.name_russian) LIKE LOWER(:mask)";
     private final String limit = " LIMIT :moviesPerPage OFFSET :offset";
-    private final int moviesPerPage = 5;
+    private @Value("${movies.per.page}")
+    int moviesPerPage;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -73,7 +75,7 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public boolean addMovie(Movie movie) {
+    public int addMovie(Movie movie) {
         logger.info("Start update movie");
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name_russian", movie.getNameRussian());
@@ -83,20 +85,21 @@ public class JdbcMovieDao implements MovieDao {
         params.addValue("rating", movie.getRating());
         params.addValue("price", movie.getPrice());
         params.addValue("picture_path", movie.getPicturePath());
-        int result = namedParameterJdbcTemplate.update(addNewMovieSql, params);
+        int result = namedParameterJdbcTemplate.queryForObject(addNewMovieSql, params, Integer.class);
         logger.info("Movie  saved");
-        return result == 1;
+        return result;
     }
 
     @Override
-    public void deleteMovie(Integer movieId) {
+    public void deleteMovie(List<Integer> movieId) {
         namedParameterJdbcTemplate.update(deleteMovieSql, new MapSqlParameterSource("id", movieId));
     }
 
     @Override
-    public List<Movie> getMoviesByMask(String mask) {
+    public List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest) {
         logger.info("start receiving movies by mask {}", mask);
         MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("offset", (movieRequest.getPage() - 1) * moviesPerPage);
         params.addValue("mask", "%" + mask + "%");
         params.addValue("moviesPerPage", moviesPerPage);
         return namedParameterJdbcTemplate.query(getMoviesSql + getByMask + limit, params, MOVIE_ROW_MAPPER);

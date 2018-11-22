@@ -1,8 +1,8 @@
-package com.shalimov.movieland.entity;
+package com.shalimov.movieland.web.entity;
 
 import java.util.List;
 
-public class Movie {
+public class MovieRequestDto {
     private int id;
     private String nameRussian;
     private String nameNative;
@@ -11,11 +11,8 @@ public class Movie {
     private double price;
     private double rating;
     private String picturePath;
-    private List<Country> countries;
-    private List<Genre> genres;
-
-    public Movie() {
-    }
+    private List<Integer> countries;
+    private List<Integer> genres;
 
     public int getId() {
         return id;
@@ -47,14 +44,6 @@ public class Movie {
 
     public void setYearOfRelease(int yearOfRelease) {
         this.yearOfRelease = yearOfRelease;
-    }
-
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
     }
 
     public String getDescription() {
@@ -89,28 +78,19 @@ public class Movie {
         this.picturePath = picturePath;
     }
 
-
-    public List<Country> getCountries() {
+    public List<Integer> getCountries() {
         return countries;
     }
 
-    public void setCountries(List<Country> countries) {
+    public void setCountries(List<Integer> countries) {
         this.countries = countries;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", nameRussian='" + nameRussian + '\'' +
-                ", nameNative='" + nameNative + '\'' +
-                ", yearOfRelease=" + yearOfRelease +
-                ", genres=" + genres +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", rating=" + rating +
-                ", picturePath='" + picturePath + '\'' +
-                ", countries=" + countries +
-                '}';
+    public List<Integer> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Integer> genres) {
+        this.genres = genres;
     }
 }

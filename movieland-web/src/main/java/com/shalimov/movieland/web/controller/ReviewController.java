@@ -7,11 +7,13 @@ import com.shalimov.movieland.web.annotation.ProtectedBy;
 import com.shalimov.movieland.web.entity.UserHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequestMapping(value = "/review")
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -20,12 +22,13 @@ public class ReviewController {
     }
 
     @ProtectedBy(UserType.USER)
-    @PostMapping(path = "/review")
+    @PostMapping
     public ResponseEntity review(@RequestParam int movieId, @RequestParam String text) {
         User user = UserHandler.getUser();
-        if (reviewService.addReview(movieId, text, user.getId()))
+        if (reviewService.addReview(movieId, text, user.getId())) {
             return ResponseEntity.ok().build();
-        else
+        } else {
             return ResponseEntity.badRequest().build();
+        }
     }
 }

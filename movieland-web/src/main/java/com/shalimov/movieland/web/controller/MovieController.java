@@ -3,6 +3,7 @@ package com.shalimov.movieland.web.controller;
 import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.service.MovieService;
 import com.shalimov.movieland.web.annotation.ProtectedBy;
+import com.shalimov.movieland.web.util.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,15 @@ import java.util.List;
 public class MovieController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final MovieService movieService;
+    private final JsonParser jsonParser;
 
     @Autowired
-    public MovieController(MovieService movieService) {
+    public MovieController(MovieService movieService, JsonParser jsonParser) {
         this.movieService = movieService;
+        this.jsonParser = jsonParser;
     }
 
-    @GetMapping(value = "")
+    @GetMapping
     public List<Movie> getAllMovies(@RequestParam(value = "rating", required = false) SortType ratingOrder,
                                     @RequestParam(value = "price", required = false) SortType priceOrder,
                                     @RequestParam(value = "page", defaultValue = "1") int page) {
@@ -67,28 +70,20 @@ public class MovieController {
     }
 
     @ProtectedBy(UserType.ADMIN)
-    @PostMapping(path = "")
-    public ResponseEntity addMovie(@RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
-                                   @RequestParam String description, @RequestParam String picturePath, @RequestParam double rating,
-                                   @RequestParam double price, @RequestParam int[] genres, @RequestParam int[] countries) {
-        Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
-        if (movieService.addMovie(movie, genres, countries))
-            return ResponseEntity.ok().build();
-        else
-            return ResponseEntity.badRequest().build();
+    @PostMapping
+    public ResponseEntity addMovie(@RequestBody String movieRequest) {
+        Movie movie = jsonParser.parse(movieRequest);
+        movieService.addMovie(movie);
+        return ResponseEntity.ok().build();
     }
 
     @ProtectedBy(UserType.ADMIN)
     @PutMapping(path = "/{movieId}")
-    public ResponseEntity editMovie(@PathVariable int movieId, @RequestParam String nameRussian, @RequestParam String nameNative, @RequestParam int yearOfRelease,
-                                    @RequestParam String description, @RequestParam String picturePath,
-                                    @RequestParam double rating, @RequestParam double price, @RequestParam int[] genres, @RequestParam int[] countries) {
-        Movie movie = new Movie(nameRussian, nameNative, yearOfRelease, description, price, rating, picturePath);
+    public ResponseEntity editMovie(@RequestBody String movieRequest, @PathVariable int movieId) {
+        Movie movie = jsonParser.parse(movieRequest);
         movie.setId(movieId);
-        if (movieService.editMovie(movie, genres, countries))
-            return ResponseEntity.ok().build();
-        else
-            return ResponseEntity.badRequest().build();
+        movieService.editMovie(movie);
+        return ResponseEntity.ok().build();
     }
 
     @ProtectedBy(UserType.ADMIN)
@@ -114,7 +109,7 @@ public class MovieController {
         logger.info("Retrieving movies by mask");
         MovieRequest movieRequest = new MovieRequest();
         movieRequest.setPage(page);
-        List<Movie> movies = movieService.getMoviesByMask(mask);
+        List<Movie> movies = movieService.getMoviesByMask(mask, movieRequest);
         logger.info("Movies  are {}", movies);
         return movies;
     }

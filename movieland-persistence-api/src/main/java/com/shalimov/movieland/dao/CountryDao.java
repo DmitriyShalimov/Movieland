@@ -2,6 +2,7 @@ package com.shalimov.movieland.dao;
 
 
 import com.shalimov.movieland.entity.Country;
+import com.shalimov.movieland.entity.Movie;
 
 import java.util.List;
 
@@ -11,7 +12,9 @@ public interface CountryDao {
 
     List<Country> getCountryForMovie(int id);
 
-    boolean addCountryForMovie(int countryId, int movieId);
+    void addCountriesForMovie(List<Country> countries, int id);
 
-    void removeAllCountriesForMovie(int movieId);
+    void removeAllCountriesForMovie(List<Integer> movies);
+
+    void enrich(List<Movie> movies, List<Integer> movieIds);
 }

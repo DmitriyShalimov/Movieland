@@ -1,0 +1,9 @@
+jdbc.password: qwerty
+jdbc.databaseName: movieland
+jdbc.user: postgres
+jdbc.port: 5432
+session.cache.update.time: 10000
+cache.update.time: 14400000
+currency.rate.url: https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json
+log.dir : C:/ideaproject/movieland
+movies.per.page: 5

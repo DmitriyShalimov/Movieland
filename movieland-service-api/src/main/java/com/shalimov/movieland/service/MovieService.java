@@ -15,13 +15,14 @@ public interface MovieService {
 
     Movie getMovieById(int movieId, Currency currency);
 
-    boolean editMovie(Movie movie, int[] genres, int[] countries);
+    void editMovie(Movie movie);
 
-    boolean addMovie(Movie movie, int[] genres, int[] countries);
+    void addMovie(Movie movie);
 
     void markMovieToDelete(int movieId);
 
     void unmarkMovieToDelete(int movieId);
 
-    List<Movie> getMoviesByMask(String mask);
+    List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest);
+
 }

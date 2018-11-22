@@ -22,7 +22,7 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping(value = "")
+    @GetMapping
     public List<Genre> getAllGenres() {
         logger.info("Retrieving all genres");
         List<Genre> genres = genreService.getAll();

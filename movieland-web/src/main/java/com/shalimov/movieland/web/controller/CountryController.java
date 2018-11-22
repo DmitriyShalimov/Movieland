@@ -22,7 +22,7 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @GetMapping(value = "")
+    @GetMapping
     public List<Country> getAllCountries() {
         logger.info("Retrieving all countries");
         List<Country> countries = countryService.getAll();

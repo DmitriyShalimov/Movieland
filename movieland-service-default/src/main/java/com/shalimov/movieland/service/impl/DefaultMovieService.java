@@ -1,33 +1,36 @@
 package com.shalimov.movieland.service.impl;
 
-import com.shalimov.movieland.dao.CountryDao;
-import com.shalimov.movieland.dao.GenreDao;
 import com.shalimov.movieland.dao.MovieDao;
 import com.shalimov.movieland.entity.*;
-import com.shalimov.movieland.service.cache.CurrencyCacheService;
+import com.shalimov.movieland.service.CountryService;
+import com.shalimov.movieland.service.GenreService;
+import com.shalimov.movieland.service.cache.CurrencyService;
 import com.shalimov.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
-    private final CurrencyCacheService currencyCache;
-    private final CountryDao jdbcCountryDao;
-    private final GenreDao jdbcGenreDao;
+    private final CurrencyService currencyService;
+    private final CountryService countryService;
+    private final GenreService genreService;
     private final List<Integer> moviesToDelete = new CopyOnWriteArrayList<>();
 
     @Autowired
-    public DefaultMovieService(MovieDao movieDao, CurrencyCacheService currencyCache, CountryDao jdbcCountryDao, GenreDao jdbcGenreDao) {
+    public DefaultMovieService(MovieDao movieDao, CurrencyService currencyService, CountryService countryService, GenreService genreService) {
         this.movieDao = movieDao;
-        this.currencyCache = currencyCache;
-        this.jdbcCountryDao = jdbcCountryDao;
-        this.jdbcGenreDao = jdbcGenreDao;
+        this.currencyService = currencyService;
+        this.countryService = countryService;
+
+        this.genreService = genreService;
     }
 
     @Override
@@ -53,62 +56,50 @@ public class DefaultMovieService implements MovieService {
     }
 
     private void setGenresAndCountries(List<Movie> movies) {
+        List<Integer> movieIds = new ArrayList<>();
         for (Movie movie : movies) {
-            List<Country> countries = jdbcCountryDao.getCountryForMovie(movie.getId());
-            movie.setCountries(countries);
-            List<Genre> genres = jdbcGenreDao.getGenreForMovie(movie.getId());
-            movie.setGenres(genres);
+            movieIds.add(movie.getId());
+            movie.setCountries(new ArrayList<>());
+            movie.setGenres(new ArrayList<>());
         }
+        countryService.enrich(movies, movieIds);
+        genreService.enrich(movies, movieIds);
     }
 
     @Override
     public Movie getMovieById(int movieId, Currency currency) {
         double rate = 1;
         if (currency == Currency.USD) {
-            rate = currencyCache.getRates().get("\"USD\"");
+            rate = currencyService.getRate("USD");
         } else if (currency == Currency.EUR) {
-            rate = currencyCache.getRates().get("\"EUR\"");
+            rate = currencyService.getRate("EUR");
         }
         Movie movie = movieDao.getMovieById(movieId);
         movie.setPrice(movie.getPrice() / rate);
-        List<Country> countries = jdbcCountryDao.getCountryForMovie(movie.getId());
+        List<Country> countries = countryService.getCountryForMovie(movie.getId());
         movie.setCountries(countries);
-        List<Genre> genres = jdbcGenreDao.getGenreForMovie(movie.getId());
+        List<Genre> genres = genreService.getGenreForMovie(movie.getId());
         movie.setGenres(genres);
         return movie;
     }
 
     @Transactional
     @Override
-    public boolean editMovie(Movie movie, int[] genres, int[] countries) {
-        jdbcGenreDao.removeAllGenresForMovie(movie.getId());
-        jdbcCountryDao.removeAllCountriesForMovie(movie.getId());
-        for (int genreId : genres) {
-            if (!jdbcGenreDao.addGenreForMovie(genreId, movie.getId())) {
-                return false;
-            }
-        }
-        for (int countryId : countries) {
-            if (!jdbcCountryDao.addCountryForMovie(countryId, movie.getId())) {
-                return false;
-            }
-        }
-        return movieDao.editMovie(movie);
+    public void editMovie(Movie movie) {
+        genreService.removeAllGenresForMovie(Collections.singletonList(movie.getId()));
+        countryService.removeAllCountriesForMovie(Collections.singletonList(movie.getId()));
+        genreService.addGenresForMovie(movie.getGenres(), movie.getId());
+        countryService.addCountriesForMovie(movie.getCountries(), movie.getId());
+        movieDao.editMovie(movie);
+
     }
 
+    @Transactional
     @Override
-    public boolean addMovie(Movie movie, int[] genres, int[] countries) {
-        for (int genreId : genres) {
-            if (!jdbcGenreDao.addGenreForMovie(genreId, movie.getId())) {
-                return false;
-            }
-        }
-        for (int countryId : countries) {
-            if (!jdbcCountryDao.addCountryForMovie(countryId, movie.getId())) {
-                return false;
-            }
-        }
-        return movieDao.addMovie(movie);
+    public void addMovie(Movie movie) {
+        int movieId = movieDao.addMovie(movie);
+        genreService.addGenresForMovie(movie.getGenres(), movieId);
+        countryService.addCountriesForMovie(movie.getCountries(), movieId);
     }
 
     @Override
@@ -122,19 +113,18 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<Movie> getMoviesByMask(String mask) {
-        List<Movie> movies = movieDao.getMoviesByMask(mask);
+    public List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest) {
+        List<Movie> movies = movieDao.getMoviesByMask(mask, movieRequest);
         setGenresAndCountries(movies);
         return movies;
     }
 
     @Scheduled(cron = "59 59 23 * * ?")
-    private void removeMovies() {
-        for (Integer movieId : moviesToDelete) {
-            movieDao.deleteMovie(movieId);
-            jdbcGenreDao.removeAllGenresForMovie(movieId);
-            jdbcCountryDao.removeAllCountriesForMovie(movieId);
-        }
+    @Transactional
+    void removeMovies() {
+        movieDao.deleteMovie(moviesToDelete);
+        genreService.removeAllGenresForMovie(moviesToDelete);
+        countryService.removeAllCountriesForMovie(moviesToDelete);
         moviesToDelete.clear();
     }
 }
