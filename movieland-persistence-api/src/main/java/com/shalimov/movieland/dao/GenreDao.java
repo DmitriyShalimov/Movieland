@@ -14,7 +14,7 @@ public interface GenreDao {
 
     void removeAllGenresForMovie(List<Integer>  movieIds);
 
-    void enrich(List<Movie> movies, List<Integer> movieIds);
+    boolean enrich(List<Movie> movies, List<Integer> movieIds);
 
     void addGenresForMovie(List<Genre> genres, int movieId);
 }

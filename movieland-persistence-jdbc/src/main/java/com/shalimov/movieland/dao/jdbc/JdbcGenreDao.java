@@ -59,10 +59,10 @@ public class JdbcGenreDao implements GenreDao {
     }
 
     @Override
-    public void enrich(List<Movie> movies, List<Integer> movieIds) {
+    public boolean enrich(List<Movie> movies, List<Integer> movieIds) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("movieIds", movieIds);
-        namedParameterJdbcTemplate.query(getGenresForMoviesSql, params, (resultSet, i) -> {
+        List<Integer> result = namedParameterJdbcTemplate.query(getGenresForMoviesSql, params, (resultSet, i) -> {
             int movieId = resultSet.getInt("movie");
             int genreId = resultSet.getInt("genre");
             String genreName = resultSet.getString("name");
@@ -74,18 +74,20 @@ public class JdbcGenreDao implements GenreDao {
             }
             return 1;
         });
+        return result != null;
     }
 
     @Override
     public void addGenresForMovie(List<Genre> genres, int movieId) {
         logger.info("Start update movie_genre");
-        jdbcTemplate.batchUpdate(ADD_GENRE_FOR_MOVIE_SQL,new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate(ADD_GENRE_FOR_MOVIE_SQL, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 Genre genre = genres.get(i);
-                ps.setInt(1,movieId );
+                ps.setInt(1, movieId);
                 ps.setInt(2, genre.getId());
             }
+
             @Override
             public int getBatchSize() {
                 return genres.size();

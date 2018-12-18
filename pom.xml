@@ -81,6 +81,18 @@
             <artifactId>liquibase-maven-plugin</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <!--Mail-->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>
+
 
         <!-- Tests -->
         <dependency>

@@ -16,5 +16,5 @@ public interface CountryDao {
 
     void removeAllCountriesForMovie(List<Integer> movies);
 
-    void enrich(List<Movie> movies, List<Integer> movieIds);
+    boolean enrich(List<Movie> movies, List<Integer> movieIds);
 }

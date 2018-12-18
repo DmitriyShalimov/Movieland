@@ -2,9 +2,8 @@ package com.shalimov.movieland.dao.jdbc;
 
 import com.shalimov.movieland.dao.MovieDao;
 import com.shalimov.movieland.dao.jdbc.mapper.MovieRowMapper;
-import com.shalimov.movieland.entity.Movie;
-import com.shalimov.movieland.entity.MovieRequest;
-import com.shalimov.movieland.entity.SortType;
+import com.shalimov.movieland.dao.jdbc.mapper.MovieWitDateRowMapper;
+import com.shalimov.movieland.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +30,14 @@ public class JdbcMovieDao implements MovieDao {
     private final String deleteMovieSql = "DELETE FROM movie WHERE id =:id;";
     private final String getByMask = " WHERE LOWER (m.name_native) LIKE LOWER(:mask) OR LOWER(m.name_russian) LIKE LOWER(:mask)";
     private final String limit = " LIMIT :moviesPerPage OFFSET :offset";
+    private final String getMoviesWithDateSql = "SELECT m.id,m.name_russian, m.name_native, m.year_of_release, m.description, m.rating, m.price, " +
+            "m.picture_path, m.add_date, m.modify_date, m.rewiew_count FROM movie AS m";
+
     private @Value("${movies.per.page}")
     int moviesPerPage;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
+    private static final RowMapper<Movie> MOVIE_WITH_DARE_ROW_MAPPER = new MovieWitDateRowMapper();
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -103,6 +106,17 @@ public class JdbcMovieDao implements MovieDao {
         params.addValue("mask", "%" + mask + "%");
         params.addValue("moviesPerPage", moviesPerPage);
         return namedParameterJdbcTemplate.query(getMoviesSql + getByMask + limit, params, MOVIE_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Movie> getMoviesForReport(ReportRequest reportRequest) {
+
+        if (reportRequest.getType() == ReportRequestType.ALL_MOVIES) {
+            return namedParameterJdbcTemplate.query(getMoviesWithDateSql, MOVIE_WITH_DARE_ROW_MAPPER);
+        } else {
+            String period=" where m.add_date >"+reportRequest.getStartDate()+" and m.add_date< "+reportRequest.getEndDate();
+            return namedParameterJdbcTemplate.query(getMoviesWithDateSql+period, MOVIE_WITH_DARE_ROW_MAPPER);
+        }
     }
 
     @Override

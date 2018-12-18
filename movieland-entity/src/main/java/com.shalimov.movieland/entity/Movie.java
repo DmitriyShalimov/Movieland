@@ -1,5 +1,6 @@
 package com.shalimov.movieland.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Movie {
@@ -11,10 +12,38 @@ public class Movie {
     private double price;
     private double rating;
     private String picturePath;
+    private LocalDateTime addDate;
+    private LocalDateTime modifyDate;
     private List<Country> countries;
     private List<Genre> genres;
 
+    public int getReviewsCount() {
+        return reviewsCount;
+    }
+
+    public void setReviewsCount(int reviewsCount) {
+        this.reviewsCount = reviewsCount;
+    }
+
+    private int reviewsCount;
+
     public Movie() {
+    }
+
+    public LocalDateTime getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(LocalDateTime addDate) {
+        this.addDate = addDate;
+    }
+
+    public LocalDateTime getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(LocalDateTime modifyDate) {
+        this.modifyDate = modifyDate;
     }
 
     public int getId() {

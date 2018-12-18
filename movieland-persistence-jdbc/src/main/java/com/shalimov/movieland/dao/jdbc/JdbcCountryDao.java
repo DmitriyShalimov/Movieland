@@ -79,11 +79,10 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void enrich(List<Movie> movies, List<Integer> movieIds) {
-
+    public boolean enrich(List<Movie> movies, List<Integer> movieIds) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("movieIds", movieIds);
-        namedParameterJdbcTemplate.query(getCountriesForMoviesSql, params, (resultSet, i) -> {
+        List<Integer> result = namedParameterJdbcTemplate.query(getCountriesForMoviesSql, params, (resultSet, i) -> {
             int movieId = resultSet.getInt("movie");
             int countryId = resultSet.getInt("country");
             String countryName = resultSet.getString("name");
@@ -95,5 +94,6 @@ public class JdbcCountryDao implements CountryDao {
             }
             return 1;
         });
+        return result != null;
     }
 }

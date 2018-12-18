@@ -12,7 +12,7 @@ public interface GenreService {
 
     List<Genre> getGenreForMovie(int movieId);
 
-    void enrich(List<Movie> movies, List<Integer> movieIds);
+    boolean enrich(List<Movie> movies, List<Integer> movieIds);
 
     void addGenresForMovie(List<Genre> genres, int movieId);
 }

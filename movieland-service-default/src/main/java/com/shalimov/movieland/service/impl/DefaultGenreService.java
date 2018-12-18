@@ -40,8 +40,8 @@ public class DefaultGenreService implements GenreService {
     }
 
     @Override
-    public void enrich(List<Movie> movies, List<Integer> movieIds) {
-        jdbcGenreDao.enrich(movies, movieIds);
+    public boolean enrich(List<Movie> movies, List<Integer> movieIds) {
+        return jdbcGenreDao.enrich(movies, movieIds);
     }
 
     @Override

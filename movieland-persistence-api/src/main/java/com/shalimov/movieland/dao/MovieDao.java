@@ -4,6 +4,7 @@ package com.shalimov.movieland.dao;
 
 import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.entity.MovieRequest;
+import com.shalimov.movieland.entity.ReportRequest;
 
 import java.util.List;
 
@@ -24,4 +25,5 @@ public interface MovieDao {
 
     List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest);
 
+    List<Movie> getMoviesForReport(ReportRequest reportRequest);
 }

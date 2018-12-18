@@ -1,15 +1,16 @@
 package com.shalimov.movieland.web.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shalimov.movieland.entity.Country;
-import com.shalimov.movieland.entity.Genre;
-import com.shalimov.movieland.entity.Movie;
+import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.web.entity.MovieRequestDto;
+import com.shalimov.movieland.web.entity.ReportRequestDto;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class JsonParser {
@@ -42,5 +43,21 @@ public class JsonParser {
             throw new RuntimeException("Error occurred while converting json", e);
         }
         return movie;
+    }
+
+    public ReportRequest jsonToReportRequest(String json) {
+        ReportRequest reportRequest=new ReportRequest();
+        try {
+            ReportRequestDto reportRequestDto=OBJECT_MAPPER.readValue(json, ReportRequestDto.class);
+            reportRequest.setStartDate(LocalDateTime.parse(reportRequestDto.getStartDate()));
+            reportRequest.setEndDate(LocalDateTime.parse(reportRequestDto.getEndDate()));
+            reportRequest.setType( ReportRequestType.getReportRequestTypeById(reportRequestDto.getType()));
+            reportRequest.setDocumentName(reportRequestDto.getDocumentName());
+            reportRequest.setId(UUID.randomUUID().toString());
+            reportRequest.setReportStatus(ReportStatus.IN_PROGRESS);
+        } catch (IOException e) {
+            throw new RuntimeException("Error occurred while converting json", e);
+        }
+        return reportRequest;
     }
 }

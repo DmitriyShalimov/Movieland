@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRowMapper implements RowMapper<User> {
+public class UserWithRatingRowMapper  implements RowMapper<User> {
     public User mapRow(ResultSet resultSet) throws SQLException {
         return mapRow(resultSet, 0);
     }
@@ -20,9 +20,8 @@ public class UserRowMapper implements RowMapper<User> {
         String lastName = resultSet.getString("lastname");
         user.setNickName(firstName + " " + lastName);
         user.setEmail(resultSet.getString("email"));
-        user.setUserType(UserType.getTypeById(resultSet.getString("role")));
-        user.setPassword(resultSet.getString("password"));
-        user.setSalt(resultSet.getString("salt"));
+        user.setAverageRating(Double.parseDouble(resultSet.getString("average_rating")));
+        user.setReviewCount(Integer.parseInt(resultSet.getString("review_count")));
         return user;
     }
 }

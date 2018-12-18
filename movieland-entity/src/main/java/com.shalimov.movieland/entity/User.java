@@ -11,6 +11,24 @@ public class User {
     private String email;
     private UserType userType;
     private UUID uuid;
+    private int reviewCount;
+    private double averageRating;
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
 
     public UUID getUuid() {
         return uuid;

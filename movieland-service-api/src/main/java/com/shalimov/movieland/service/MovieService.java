@@ -3,6 +3,7 @@ package com.shalimov.movieland.service;
 import com.shalimov.movieland.entity.Currency;
 import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.entity.MovieRequest;
+import com.shalimov.movieland.entity.ReportRequest;
 
 import java.util.List;
 
@@ -25,4 +26,5 @@ public interface MovieService {
 
     List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest);
 
+    List<Movie> getMoviesForReport(ReportRequest reportRequest);
 }

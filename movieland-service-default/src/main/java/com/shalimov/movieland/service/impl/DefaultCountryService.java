@@ -38,8 +38,8 @@ public class DefaultCountryService implements CountryService {
     }
 
     @Override
-    public void enrich(List<Movie> movies, List<Integer> movieIds) {
-        jdbcCountryDao.enrich(movies, movieIds);
+    public boolean enrich(List<Movie> movies, List<Integer> movieIds) {
+        return jdbcCountryDao.enrich(movies, movieIds);
     }
 
     @Override
