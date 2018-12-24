@@ -1,7 +1,6 @@
 package com.shalimov.movieland.dao;
 
 
-
 import com.shalimov.movieland.entity.Genre;
 import com.shalimov.movieland.entity.Movie;
 
@@ -12,9 +11,9 @@ public interface GenreDao {
 
     List<Genre> getGenreForMovie(int id);
 
-    void removeAllGenresForMovie(List<Integer>  movieIds);
+    void removeAllGenresForMovie(List<Integer> movieIds);
 
-    boolean enrich(List<Movie> movies, List<Integer> movieIds);
+    void enrich(List<Movie> movies, List<Integer> movieIds);
 
     void addGenresForMovie(List<Genre> genres, int movieId);
 }

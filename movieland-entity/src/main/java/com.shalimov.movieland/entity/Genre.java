@@ -1,8 +1,9 @@
 package com.shalimov.movieland.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public final class Genre {
+public final class Genre implements Serializable {
     private final int id;
     private final String title;
 

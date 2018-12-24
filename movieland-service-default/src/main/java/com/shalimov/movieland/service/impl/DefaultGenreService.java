@@ -4,6 +4,8 @@ import com.shalimov.movieland.dao.GenreDao;
 import com.shalimov.movieland.entity.Genre;
 import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.service.GenreService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,7 @@ import java.util.List;
 
 @Service
 public class DefaultGenreService implements GenreService {
-
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final GenreDao jdbcGenreDao;
     private volatile List<Genre> allGenres;
 
@@ -40,8 +42,12 @@ public class DefaultGenreService implements GenreService {
     }
 
     @Override
-    public boolean enrich(List<Movie> movies, List<Integer> movieIds) {
-        return jdbcGenreDao.enrich(movies, movieIds);
+    public void enrich(List<Movie> movies, List<Integer> movieIds) {
+        if (Thread.currentThread().isInterrupted()) {
+            logger.warn("Enrichment was canceled by timeout");
+        } else {
+            jdbcGenreDao.enrich(movies, movieIds);
+        }
     }
 
     @Override

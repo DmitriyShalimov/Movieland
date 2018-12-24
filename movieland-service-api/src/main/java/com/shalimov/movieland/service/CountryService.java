@@ -12,7 +12,7 @@ public interface CountryService {
 
     List<Country> getCountryForMovie(int movieId);
 
-    boolean enrich(List<Movie> movies, List<Integer> movieIds);
+    void enrich(List<Movie> movies, List<Integer> movieIds);
 
     void addCountriesForMovie(List<Country> countries, int movieId);
 }

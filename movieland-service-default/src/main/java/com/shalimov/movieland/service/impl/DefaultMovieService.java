@@ -2,6 +2,7 @@ package com.shalimov.movieland.service.impl;
 
 import com.shalimov.movieland.dao.MovieDao;
 import com.shalimov.movieland.entity.*;
+import com.shalimov.movieland.entity.Currency;
 import com.shalimov.movieland.service.CountryService;
 import com.shalimov.movieland.service.GenreService;
 import com.shalimov.movieland.service.cache.CurrencyService;
@@ -14,12 +15,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.*;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultMovieService implements MovieService {
@@ -30,16 +30,17 @@ public class DefaultMovieService implements MovieService {
     private final GenreService genreService;
     private final List<Integer> moviesToDelete = new CopyOnWriteArrayList<>();
     private final Map<Integer, SoftReference<Movie>> movieCache = new ConcurrentHashMap<>();
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    private final ExecutorService executorService;
     @Value("${executor.timeout}")
     private long timeout;
 
     @Autowired
-    public DefaultMovieService(MovieDao movieDao, CurrencyService currencyService, CountryService countryService, GenreService genreService) {
+    public DefaultMovieService(MovieDao movieDao, CurrencyService currencyService, CountryService countryService, GenreService genreService, ExecutorService executorService) {
         this.movieDao = movieDao;
         this.currencyService = currencyService;
         this.countryService = countryService;
         this.genreService = genreService;
+        this.executorService = executorService;
     }
 
     @Override
@@ -64,25 +65,24 @@ public class DefaultMovieService implements MovieService {
         return movies;
     }
 
-    private void setGenresAndCountries(List<Movie> movies) {
+    private synchronized void setGenresAndCountries(List<Movie> movies) {
         List<Integer> movieIds = new ArrayList<>();
         for (Movie movie : movies) {
             movieIds.add(movie.getId());
             movie.setCountries(new ArrayList<>());
             movie.setGenres(new ArrayList<>());
         }
-        List<Callable<Boolean>> tasks = new ArrayList<>();
+        List<Runnable> tasks = new ArrayList<>();
         tasks.add(() -> countryService.enrich(movies, movieIds));
         tasks.add(() -> genreService.enrich(movies, movieIds));
-
         try {
-            List<Future<Boolean>> futures = EXECUTOR_SERVICE.invokeAll(tasks, timeout, TimeUnit.SECONDS);
-            for (Future<Boolean> future : futures) {
-                if (future.isCancelled()) {
+            List<Future<Object>> futures = executorService.invokeAll(tasks.stream().map(Executors::callable).collect(Collectors.toList()), timeout, TimeUnit.SECONDS);
+            for (Future<Object> future : futures) {
+                if (future.isCancelled() || future.get() == null) {
                     logger.error("Enrichment was cancelled");
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             logger.error("Enrichment was interrupted");
         }
     }
@@ -95,9 +95,27 @@ public class DefaultMovieService implements MovieService {
             movie = movieSoftReference.get();
             if (movie == null) {
                 movie = getMovieFromDB(movieId);
+                movieCache.put(movie.getId(), new SoftReference<>(movie));
             }
         } else {
             movie = getMovieFromDB(movieId);
+            movieCache.put(movie.getId(), new SoftReference<>(movie));
+        }
+        return getsSerializableMovie(currency, movie);
+    }
+
+    private Movie getsSerializableMovie(Currency currency, Movie movie) {
+        Movie serializableMovie = null;
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            objectOutputStream.writeObject(movie);
+            objectOutputStream.flush();
+            byte[] byteData = byteArrayOutputStream.toByteArray();
+            try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteData)) {
+                serializableMovie = (Movie) new ObjectInputStream(byteArrayInputStream).readObject();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("failed serializable for movie with id {}", movie.getId());
         }
         double rate = 1;
         if (currency == Currency.USD) {
@@ -105,8 +123,8 @@ public class DefaultMovieService implements MovieService {
         } else if (currency == Currency.EUR) {
             rate = currencyService.getRate("EUR");
         }
-        movie.setPrice(movie.getPrice() / rate);
-        return movie;
+        serializableMovie.setPrice(serializableMovie.getPrice() / rate);
+        return serializableMovie;
     }
 
     @Transactional
@@ -126,6 +144,7 @@ public class DefaultMovieService implements MovieService {
         int movieId = movieDao.addMovie(movie);
         genreService.addGenresForMovie(movie.getGenres(), movieId);
         countryService.addCountriesForMovie(movie.getCountries(), movieId);
+        movieCache.put(movie.getId(), new SoftReference<>(movie));
     }
 
     @Override
@@ -166,7 +185,7 @@ public class DefaultMovieService implements MovieService {
         movie.setCountries(countries);
         List<Genre> genres = genreService.getGenreForMovie(movie.getId());
         movie.setGenres(genres);
-        movieCache.put(movie.getId(), new SoftReference<>(movie));
         return movie;
     }
+
 }

@@ -59,10 +59,9 @@ public class JdbcGenreDao implements GenreDao {
     }
 
     @Override
-    public boolean enrich(List<Movie> movies, List<Integer> movieIds) {
+    public void enrich(List<Movie> movies, List<Integer> movieIds) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("movieIds", movieIds);
-        List<Integer> result = namedParameterJdbcTemplate.query(getGenresForMoviesSql, params, (resultSet, i) -> {
+        params.addValue("movieIds", movieIds);namedParameterJdbcTemplate.query(getGenresForMoviesSql, params, (resultSet, i) -> {
             int movieId = resultSet.getInt("movie");
             int genreId = resultSet.getInt("genre");
             String genreName = resultSet.getString("name");
@@ -74,7 +73,6 @@ public class JdbcGenreDao implements GenreDao {
             }
             return 1;
         });
-        return result != null;
     }
 
     @Override
