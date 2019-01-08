@@ -2,6 +2,7 @@ package com.shalimov.movieland.service.cache;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shalimov.movieland.entity.Currency;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,19 +12,22 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CurrencyService {
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private Map<String, Double> rates = new ConcurrentHashMap<>();
+    private Map<Currency, Double> rates = new EnumMap<>(Currency.class);
     private @Value("${currency.rate.url}")
     String url;
 
-    public double getRate(String rate) {
-        return rates.get(rate);
+    public double getRate(Currency currency) {
+        if (currency == Currency.UAH) {
+            return 1;
+        } else {
+            return rates.get(currency);
+        }
     }
 
     @PostConstruct
@@ -36,7 +40,7 @@ public class CurrencyService {
                 String currency = node.findValue("cc").toString();
                 Double rate = Double.valueOf(node.findValue("rate").toString());
                 if ("\"USD\"".equals(currency) || "\"EUR\"".equals(currency)) {
-                    rates.put(currency.substring(1, currency.length() - 1), rate);
+                    rates.put(Currency.getCurrencyById(currency.substring(1, currency.length() - 1)), rate);
                 }
             }
         } catch (Exception e) {

@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.web.entity.MovieRequestDto;
 import com.shalimov.movieland.web.entity.ReportRequestDto;
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Component
+@Service
 public class JsonParser {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

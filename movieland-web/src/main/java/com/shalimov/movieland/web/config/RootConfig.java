@@ -28,7 +28,7 @@ public class RootConfig {
     @Bean
     ExecutorService executorService() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
+        taskExecutor.setMaxPoolSize(100);
         taskExecutor.initialize();
         return new ExecutorServiceAdapter(taskExecutor);
     }

@@ -7,7 +7,6 @@ import com.shalimov.movieland.web.util.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,37 +70,33 @@ public class MovieController {
 
     @ProtectedBy(UserType.ADMIN)
     @PostMapping
-    public ResponseEntity addMovie(@RequestBody String movieRequest) {
+    public void addMovie(@RequestBody String movieRequest) {
         Movie movie = jsonParser.parse(movieRequest);
         movieService.addMovie(movie);
-        return ResponseEntity.ok().build();
     }
 
     @ProtectedBy(UserType.ADMIN)
     @PutMapping(path = "/{movieId}")
-    public ResponseEntity editMovie(@RequestBody String movieRequest, @PathVariable int movieId) {
+    public void editMovie(@RequestBody String movieRequest, @PathVariable int movieId) {
         Movie movie = jsonParser.parse(movieRequest);
         movie.setId(movieId);
         movieService.editMovie(movie);
-        return ResponseEntity.ok().build();
     }
 
     @ProtectedBy(UserType.ADMIN)
     @DeleteMapping(value = "/{movieId}")
-    public ResponseEntity markMovieToDelete(@PathVariable int movieId) {
+    public void markMovieToDelete(@PathVariable int movieId) {
         logger.info("Mark to delete movie with id {}", movieId);
         movieService.markMovieToDelete(movieId);
         logger.info("Movie  is marked");
-        return ResponseEntity.ok().build();
     }
 
     @ProtectedBy(UserType.ADMIN)
     @PostMapping(value = "/{movieId}/unmark")
-    public ResponseEntity unmarkMovieToDelete(@PathVariable int movieId) {
+    public void unmarkMovieToDelete(@PathVariable int movieId) {
         logger.info("Unmark to delete movie with id {}", movieId);
         movieService.unmarkMovieToDelete(movieId);
         logger.info("Movie  is unmarked");
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/search")

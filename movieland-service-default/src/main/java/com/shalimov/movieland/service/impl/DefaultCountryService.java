@@ -4,8 +4,6 @@ import com.shalimov.movieland.dao.CountryDao;
 import com.shalimov.movieland.entity.Country;
 import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.service.CountryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import java.util.List;
 
 @Service
 public class DefaultCountryService implements CountryService {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final CountryDao jdbcCountryDao;
     private volatile List<Country> allCountries;
 
@@ -42,11 +39,7 @@ public class DefaultCountryService implements CountryService {
 
     @Override
     public void enrich(List<Movie> movies, List<Integer> movieIds) {
-        if (Thread.currentThread().isInterrupted()) {
-            logger.warn("Enrichment was canceled by timeout");
-        } else {
             jdbcCountryDao.enrich(movies, movieIds);
-        }
     }
 
     @Override

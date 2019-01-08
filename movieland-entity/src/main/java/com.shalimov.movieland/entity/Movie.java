@@ -1,10 +1,9 @@
 package com.shalimov.movieland.entity;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Movie implements Serializable {
+public class Movie {
     private int id;
     private String nameRussian;
     private String nameNative;
