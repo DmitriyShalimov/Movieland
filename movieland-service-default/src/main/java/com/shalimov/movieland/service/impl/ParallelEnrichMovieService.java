@@ -35,30 +35,6 @@ public class ParallelEnrichMovieService implements EnrichMovieService {
     }
 
     @Override
-    public void removeGenresAndCountriesForMovie(List<Integer> movies) {
-        List<Runnable> tasks = new ArrayList<>();
-        tasks.add(() -> genreService.removeAllGenresForMovie(movies));
-        tasks.add(() -> countryService.removeAllCountriesForMovie(movies));
-        try {
-            executorService.invokeAll(tasks.stream().map(Executors::callable).collect(Collectors.toList()), timeout, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void addGenresAndCountries(Movie movie, int movieId) {
-        List<Runnable> tasks = new ArrayList<>();
-        tasks.add(() -> genreService.addGenresForMovie(movie.getGenres(), movieId));
-        tasks.add(() -> countryService.addCountriesForMovie(movie.getCountries(), movieId));
-        try {
-            executorService.invokeAll(tasks.stream().map(Executors::callable).collect(Collectors.toList()), timeout, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void enrich(Movie movie) {
         Future<List<Country>> countries = executorService.submit(() -> countryService.getCountryForMovie(movie.getId()));
         Future<List<Genre>> genres = executorService.submit(() -> genreService.getGenreForMovie(movie.getId()));
@@ -66,6 +42,7 @@ public class ParallelEnrichMovieService implements EnrichMovieService {
             movie.setCountries(countries.get(timeout, TimeUnit.SECONDS));
             movie.setGenres(genres.get(timeout, TimeUnit.SECONDS));
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
+            System.out.println(e.getMessage());
             logger.warn("Enrichment was canceled by timeout for movie with id {}", movie.getId());
         }
     }
@@ -77,29 +54,14 @@ public class ParallelEnrichMovieService implements EnrichMovieService {
             movieIds.add(movie.getId());
         }
         List<Runnable> tasks = new ArrayList<>();
-        System.out.println(new ThreadLocal<>().get());
-        tasks.add(() -> enrichCountry(movies, movieIds));
-        tasks.add(() -> enrichGenre(movies, movieIds));
+        tasks.add(() ->  genreService.enrich(movies, movieIds));
+        tasks.add(() -> countryService.enrich(movies, movieIds));
         try {
+            System.out.println("try");
             executorService.invokeAll(tasks.stream().map(Executors::callable).collect(Collectors.toList()), timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void enrichCountry(List<Movie> movies, List<Integer> movieIds) {
-        if (Thread.currentThread().isInterrupted()) {
-            logger.warn("Enrichment was canceled by timeout");
-        } else {
-            countryService.enrich(movies, movieIds);
-        }
-    }
-
-    private void enrichGenre(List<Movie> movies, List<Integer> movieIds) {
-        if (Thread.currentThread().isInterrupted()) {
-            logger.warn("Enrichment was canceled by timeout");
-        } else {
-            genreService.enrich(movies, movieIds);
+            System.out.println(e.getMessage());
+            logger.warn("Will never happen");
         }
     }
 }

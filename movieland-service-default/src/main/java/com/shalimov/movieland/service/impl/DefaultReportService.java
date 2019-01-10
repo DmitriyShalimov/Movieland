@@ -4,9 +4,11 @@ import com.shalimov.movieland.dao.ReportDao;
 import com.shalimov.movieland.entity.Report;
 import com.shalimov.movieland.entity.ReportRequest;
 import com.shalimov.movieland.entity.ReportStatus;
+import com.shalimov.movieland.entity.ReportType;
 import com.shalimov.movieland.service.ReportService;
 import com.shalimov.movieland.service.utils.EmailSender;
 import com.shalimov.movieland.service.utils.ExcelReportGenerator;
+import com.shalimov.movieland.service.utils.PdfReportGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,14 +21,16 @@ public class DefaultReportService implements ReportService {
 
     private final ReportDao reportDao;
     private final ExcelReportGenerator excelReportGenerator;
+    private final PdfReportGenerator pdfReportGenerator;
     private final EmailSender emailSender;
     private ConcurrentLinkedQueue<ReportRequest> reports = new ConcurrentLinkedQueue<>();
 
     @Autowired
-    public DefaultReportService(ReportDao reportDao, ExcelReportGenerator excelReportGenerator, EmailSender emailSender) {
+    public DefaultReportService(ReportDao reportDao, ExcelReportGenerator excelReportGenerator, EmailSender emailSender, PdfReportGenerator pdfReportGenerator) {
         this.reportDao = reportDao;
         this.excelReportGenerator = excelReportGenerator;
         this.emailSender = emailSender;
+        this.pdfReportGenerator = pdfReportGenerator;
     }
 
     @Override
@@ -72,7 +76,12 @@ public class DefaultReportService implements ReportService {
     private void processReports() {
         while (!reports.isEmpty()) {
             ReportRequest reportRequest = reports.poll();
-            Report report = excelReportGenerator.createReport(reportRequest);
+            Report report;
+            if (reportRequest.getReportType().equals(ReportType.EXCEL)) {
+                report = excelReportGenerator.createReport(reportRequest);
+            } else {
+                report = pdfReportGenerator.createReport(reportRequest);
+            }
             if (reportRequest.getReportStatus().equals(ReportStatus.IN_PROGRESS)) {
                 if (reportDao.saveReport(report)) {
                     reportRequest.setReportStatus(ReportStatus.DONE);

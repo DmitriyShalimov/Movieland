@@ -21,7 +21,9 @@ public class EmailSender {
     private Properties mailSenderProperties;
     @Value("${server.port}")
     private String port;
+    @Value("${email.username}")
     private String username;
+    @Value("${email.password}")
     private String password;
     private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
@@ -33,8 +35,6 @@ public class EmailSender {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        username = mailSenderProperties.getProperty("username");
-        password = mailSenderProperties.getProperty("password");
     }
 
     public void sendEmail(String toEmail, String reportId, String documentName) {

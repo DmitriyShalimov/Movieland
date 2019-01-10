@@ -10,6 +10,15 @@ public class ReportRequest {
     private String email;
     private String documentName;
     private ReportStatus reportStatus;
+    private ReportType reportType;
+
+    public ReportType getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(ReportType reportType) {
+        this.reportType = reportType;
+    }
 
     public ReportStatus getReportStatus() {
         return reportStatus;

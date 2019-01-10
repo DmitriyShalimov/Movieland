@@ -22,11 +22,6 @@ public class DefaultEnrichMovieService implements EnrichMovieService {
         this.genreService = genreService;
     }
 
-    @Override
-    public void removeGenresAndCountriesForMovie(List<Integer> movies) {
-        genreService.removeAllGenresForMovie(movies);
-        countryService.removeAllCountriesForMovie(movies);
-    }
 
     @Override
     public void enrich(List<Movie> movies) {
@@ -34,14 +29,8 @@ public class DefaultEnrichMovieService implements EnrichMovieService {
         for (Movie movie : movies) {
             movieIds.add(movie.getId());
         }
-        countryService.enrich(movies,movieIds);
+        countryService.enrich(movies, movieIds);
         genreService.enrich(movies, movieIds);
-    }
-
-    @Override
-    public void addGenresAndCountries(Movie movie, int movieId) {
-        genreService.addGenresForMovie(movie.getGenres(), movieId);
-        countryService.addCountriesForMovie(movie.getCountries(), movieId);
     }
 
     @Override

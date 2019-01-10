@@ -39,7 +39,7 @@ public class DefaultCountryService implements CountryService {
 
     @Override
     public void enrich(List<Movie> movies, List<Integer> movieIds) {
-            jdbcCountryDao.enrich(movies, movieIds);
+        jdbcCountryDao.enrich(movies, movieIds);
     }
 
     @Override
@@ -50,7 +50,6 @@ public class DefaultCountryService implements CountryService {
     @PostConstruct
     @Scheduled(fixedDelayString = "${cache.update.time}", initialDelayString = "${cache.update.time}")
     private void invalidate() {
-
         allCountries = jdbcCountryDao.getAll();
     }
 }

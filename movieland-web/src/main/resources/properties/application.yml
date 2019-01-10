@@ -9,3 +9,5 @@ log.dir : C:/ideaproject/movieland
 movies.per.page: 5
 executor.timeout: 5
 server.port: 8080
+email.username: dmitriyshalimov@gmail.com
+email.password: fcnhf[fy1m
