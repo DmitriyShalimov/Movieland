@@ -42,7 +42,6 @@ public class ParallelEnrichMovieService implements EnrichMovieService {
             movie.setCountries(countries.get(timeout, TimeUnit.SECONDS));
             movie.setGenres(genres.get(timeout, TimeUnit.SECONDS));
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            System.out.println(e.getMessage());
             logger.warn("Enrichment was canceled by timeout for movie with id {}", movie.getId());
         }
     }
@@ -57,10 +56,8 @@ public class ParallelEnrichMovieService implements EnrichMovieService {
         tasks.add(() ->  genreService.enrich(movies, movieIds));
         tasks.add(() -> countryService.enrich(movies, movieIds));
         try {
-            System.out.println("try");
             executorService.invokeAll(tasks.stream().map(Executors::callable).collect(Collectors.toList()), timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
             logger.warn("Will never happen");
         }
     }
