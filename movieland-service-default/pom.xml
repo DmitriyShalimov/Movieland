@@ -19,11 +19,7 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+
 
         <!-- Json -->
         <dependency>
@@ -33,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.shalimov</groupId>
-            <artifactId>movieland-persistence-jdbc</artifactId>
+            <artifactId>movieland-persistence-jpa</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

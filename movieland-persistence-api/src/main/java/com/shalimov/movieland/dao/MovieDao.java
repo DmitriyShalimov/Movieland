@@ -17,7 +17,7 @@ public interface MovieDao {
 
     Movie getMovieById(int movieId);
 
-    boolean editMovie(Movie movie);
+    void editMovie(Movie movie);
 
     int addMovie(Movie movie);
 

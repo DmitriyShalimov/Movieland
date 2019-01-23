@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -61,7 +63,7 @@ public class MovieController {
     }
 
     @GetMapping(value = "/{movieId}")
-    public Movie getMovieById(@PathVariable int movieId, @RequestParam(value = "currency", defaultValue = "USD") Currency currency) {
+    public Movie getMovieById(@PathVariable int movieId, @RequestParam(value = "currency", defaultValue = "UAH") Currency currency) {
         logger.info("Retrieving movie with id {}", movieId);
         Movie movie = movieService.getMovieById(movieId, currency);
         logger.info("Movie  is {}", movie);
@@ -108,4 +110,31 @@ public class MovieController {
         logger.info("Movies  are {}", movies);
         return movies;
     }
+
+
+
+    @GetMapping(value = "/aa")
+    public void addMovie() {
+
+        Movie movie =new Movie();
+movie.setId(26);
+
+        movie.setNameRussian("фильм");
+
+        movie.setNameNative("movie");
+        movie.setDescription("description");
+        List<Country> countries = new ArrayList<>();
+        countries.add(new Country(8,"СШАА"));
+        movie.setCountries(countries);
+        movie.setPicturePath("path");
+        List<Genre> genres = new ArrayList<>();
+        genres.add(new Genre(16,"драмаа"));
+        movie.setGenres(genres);
+        movie.setYearOfRelease(1);
+        movie.setPrice(1);
+        movie.setRating(1);
+        movieService.addMovie(movie);
+
+    }
+
 }

@@ -2,7 +2,6 @@ package com.shalimov.movieland.service.impl;
 
 import com.shalimov.movieland.dao.GenreDao;
 import com.shalimov.movieland.entity.Genre;
-import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,27 +24,6 @@ public class DefaultGenreService implements GenreService {
     @Override
     public List<Genre> getAll() {
         return new ArrayList<>(allGenres);
-    }
-
-
-    @Override
-    public void removeAllGenresForMovie(List<Integer> movieId) {
-        jdbcGenreDao.removeAllGenresForMovie(movieId);
-    }
-
-    @Override
-    public List<Genre> getGenreForMovie(int movieId) {
-        return jdbcGenreDao.getGenreForMovie(movieId);
-    }
-
-    @Override
-    public void enrich(List<Movie> movies, List<Integer> movieIds) {
-            jdbcGenreDao.enrich(movies, movieIds);
-    }
-
-    @Override
-    public void addGenresForMovie(List<Genre> genres, int movieId) {
-        jdbcGenreDao.addGenresForMovie(genres, movieId);
     }
 
     @PostConstruct

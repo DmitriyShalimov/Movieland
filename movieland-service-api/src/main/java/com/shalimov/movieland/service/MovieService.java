@@ -27,4 +27,6 @@ public interface MovieService {
     List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest);
 
     List<Movie> getMoviesForReport(ReportRequest reportRequest);
+
+    void removeMovies();
 }

@@ -8,11 +8,4 @@ import java.util.List;
 public interface CountryService {
     List<Country> getAll();
 
-    void removeAllCountriesForMovie(List<Integer> movies);
-
-    List<Country> getCountryForMovie(int movieId);
-
-    void enrich(List<Movie> movies, List<Integer> movieIds);
-
-    void addCountriesForMovie(List<Country> countries, int movieId);
 }

@@ -15,7 +15,7 @@ public class DefaultReviewService implements ReviewService {
     }
 
     @Override
-    public boolean addReview(int movieId, String text, int userId) {
-        return reviewDao.addReview(movieId, text, userId);
+    public void addReview(int movieId, String text, int userId) {
+         reviewDao.addReview(movieId, text, userId);
     }
 }

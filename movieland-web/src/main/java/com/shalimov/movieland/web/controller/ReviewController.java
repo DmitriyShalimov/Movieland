@@ -23,12 +23,8 @@ public class ReviewController {
 
     @ProtectedBy(UserType.USER)
     @PostMapping
-    public ResponseEntity review(@RequestParam int movieId, @RequestParam String text) {
+    public void review(@RequestParam int movieId, @RequestParam String text) {
         User user = UserHandler.getUser();
-        if (reviewService.addReview(movieId, text, user.getId())) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        reviewService.addReview(movieId, text, user.getId());
     }
 }

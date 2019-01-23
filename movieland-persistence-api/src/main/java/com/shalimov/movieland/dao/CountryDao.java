@@ -10,11 +10,5 @@ public interface CountryDao {
 
     List<Country> getAll();
 
-    List<Country> getCountryForMovie(int id);
 
-    void addCountriesForMovie(List<Country> countries, int id);
-
-    void removeAllCountriesForMovie(List<Integer> movies);
-
-    void enrich(List<Movie> movies, List<Integer> movieIds);
 }

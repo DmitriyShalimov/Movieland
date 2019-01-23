@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>movieland-persistence-jdbc</artifactId>
+    <artifactId>movieland-persistence-jpa</artifactId>
     <build>
         <plugins>
             <plugin>
@@ -43,6 +43,22 @@
             <artifactId>liquibase-maven-plugin</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.12.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>5.0.2.RELEASE</version>
+        </dependency>
+
         <!-- Logs -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -54,17 +70,7 @@
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.7.7</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
         <!--SQL-->
         <dependency>

@@ -4,7 +4,6 @@ import com.shalimov.movieland.dao.MovieDao;
 import com.shalimov.movieland.entity.*;
 import com.shalimov.movieland.entity.Currency;
 import com.shalimov.movieland.service.CountryService;
-import com.shalimov.movieland.service.EnrichMovieService;
 import com.shalimov.movieland.service.GenreService;
 import com.shalimov.movieland.service.cache.CurrencyService;
 import com.shalimov.movieland.service.MovieService;
@@ -23,39 +22,27 @@ public class DefaultMovieService implements MovieService {
     private final CurrencyService currencyService;
     private final List<Integer> moviesToDelete = new CopyOnWriteArrayList<>();
     private final Map<Integer, SoftReference<Movie>> movieCache = new ConcurrentHashMap<>();
-    private final EnrichMovieService parallelEnrichMovieService;
-    private final CountryService countryService;
-    private final GenreService genreService;
+
 
     @Autowired
-    public DefaultMovieService(MovieDao movieDao, CurrencyService currencyService,
-                               EnrichMovieService parallelEnrichMovieService,CountryService countryService,GenreService genreService) {
+    public DefaultMovieService(MovieDao movieDao, CurrencyService currencyService) {
         this.movieDao = movieDao;
         this.currencyService = currencyService;
-        this.parallelEnrichMovieService = parallelEnrichMovieService;
-        this.countryService=countryService;
-        this.genreService=genreService;
     }
 
     @Override
     public List<Movie> getAll(MovieRequest movieRequest) {
-        List<Movie> movies = movieDao.getAll(movieRequest);
-        parallelEnrichMovieService.enrich(movies);
-        return movies;
+        return movieDao.getAll(movieRequest);
     }
 
     @Override
     public List<Movie> getRandomMovies() {
-        List<Movie> movies = movieDao.getRandomMovies();
-        parallelEnrichMovieService.enrich(movies);
-        return movies;
+        return movieDao.getRandomMovies();
     }
 
     @Override
     public List<Movie> getMoviesByGenre(int genreId, MovieRequest movieRequest) {
-        List<Movie> movies = movieDao.getMoviesByGenre(genreId, movieRequest);
-        parallelEnrichMovieService.enrich(movies);
-        return movies;
+        return movieDao.getMoviesByGenre(genreId, movieRequest);
     }
 
     @Override
@@ -83,7 +70,7 @@ public class DefaultMovieService implements MovieService {
 
     private Movie copy(Movie movie) {
         Movie copyMovie = new Movie();
-        movie.setId(movie.getId());
+        copyMovie.setId(movie.getId());
         copyMovie.setNameRussian(movie.getNameRussian());
         copyMovie.setNameNative(movie.getNameNative());
         copyMovie.setDescription(movie.getDescription());
@@ -108,10 +95,6 @@ public class DefaultMovieService implements MovieService {
     @Transactional
     @Override
     public void editMovie(Movie movie) {
-        genreService.removeAllGenresForMovie(Collections.singletonList(movie.getId()));
-        countryService.removeAllCountriesForMovie(Collections.singletonList(movie.getId()));
-        genreService.addGenresForMovie(movie.getGenres(), movie.getId());
-        countryService.addCountriesForMovie(movie.getCountries(), movie.getId());
         movieDao.editMovie(movie);
         movieCache.put(movie.getId(), new SoftReference<>(movie));
     }
@@ -120,9 +103,8 @@ public class DefaultMovieService implements MovieService {
     @Override
     public void addMovie(Movie movie) {
         int movieId = movieDao.addMovie(movie);
-        genreService.addGenresForMovie(movie.getGenres(), movieId);
-        countryService.addCountriesForMovie(movie.getCountries(), movieId);
-        movieCache.put(movie.getId(), new SoftReference<>(movie));
+        movie.setId(movieId);
+        movieCache.put(movieId, new SoftReference<>(movie));
     }
 
     @Override
@@ -137,9 +119,7 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public List<Movie> getMoviesByMask(String mask, MovieRequest movieRequest) {
-        List<Movie> movies = movieDao.getMoviesByMask(mask, movieRequest);
-        parallelEnrichMovieService.enrich(movies);
-        return movies;
+        return movieDao.getMoviesByMask(mask, movieRequest);
     }
 
     @Override
@@ -147,19 +127,16 @@ public class DefaultMovieService implements MovieService {
         return movieDao.getMoviesForReport(reportRequest);
     }
 
+    @Override
     @Scheduled(cron = "59 59 23 * * ?")
     @Transactional
-    void removeMovies() {
+    public void removeMovies() {
         movieDao.deleteMovie(moviesToDelete);
-        genreService.removeAllGenresForMovie(moviesToDelete);
-        countryService.removeAllCountriesForMovie(moviesToDelete);
         moviesToDelete.clear();
     }
 
     private Movie getMovieFromDB(int movieId) {
-        Movie movie;
-        movie = movieDao.getMovieById(movieId);
-        parallelEnrichMovieService.enrich(movie);
-        return movie;
+
+        return movieDao.getMovieById(movieId);
     }
 }

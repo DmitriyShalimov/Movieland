@@ -2,7 +2,6 @@ package com.shalimov.movieland.service.impl;
 
 import com.shalimov.movieland.dao.CountryDao;
 import com.shalimov.movieland.entity.Country;
-import com.shalimov.movieland.entity.Movie;
 import com.shalimov.movieland.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,26 +24,6 @@ public class DefaultCountryService implements CountryService {
     @Override
     public List<Country> getAll() {
         return new ArrayList<>(allCountries);
-    }
-
-    @Override
-    public void removeAllCountriesForMovie(List<Integer> movies) {
-        jdbcCountryDao.removeAllCountriesForMovie(movies);
-    }
-
-    @Override
-    public List<Country> getCountryForMovie(int movieId) {
-        return jdbcCountryDao.getCountryForMovie(movieId);
-    }
-
-    @Override
-    public void enrich(List<Movie> movies, List<Integer> movieIds) {
-        jdbcCountryDao.enrich(movies, movieIds);
-    }
-
-    @Override
-    public void addCountriesForMovie(List<Country> countries, int movieId) {
-        jdbcCountryDao.addCountriesForMovie(countries, movieId);
     }
 
     @PostConstruct

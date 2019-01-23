@@ -1,9 +1,19 @@
 package com.shalimov.movieland.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "review")
 public class Review {
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     private int id;
+    @Column(name = "review")
     private String review;
-    private User user;
+    @Column(name = "user")
+    private int user;
+    @Column(name = "title")
     private String title;
 
     public int getId() {
@@ -22,11 +32,11 @@ public class Review {
         this.review = review;
     }
 
-    public User getUser() {
+    public int getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(int user) {
         this.user = user;
     }
 
