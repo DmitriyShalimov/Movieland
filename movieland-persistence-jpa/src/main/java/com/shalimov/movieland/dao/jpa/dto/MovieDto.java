@@ -23,13 +23,13 @@ public class MovieDto {
     private double rating;
     @Column(name = "picture_path")
     private String picturePath;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "movie_genre",
             joinColumns = {@JoinColumn(name = "movie", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "genre", referencedColumnName = "id")})
     private List<GenreDto> genres;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "movie_country",
             joinColumns = {@JoinColumn(name = "movie", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "country", referencedColumnName = "id")})

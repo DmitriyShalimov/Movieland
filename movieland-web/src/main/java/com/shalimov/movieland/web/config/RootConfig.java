@@ -67,9 +67,15 @@ public class RootConfig {
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty(
-                "hibernate.hbm2ddl.auto", "create-drop");
+                "hibernate.hbm2ddl.auto", "validate");
         hibernateProperties.setProperty(
-                "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+                "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        hibernateProperties.setProperty(
+                "hibernate.ejb.naming_strategy", "org.hibernate.cfg.ImprovedNamingStrategy");
+        hibernateProperties.setProperty(
+                "hibernate.connection.charSet", "UTF-8");
+        hibernateProperties.setProperty(
+                "hibernate.hbm2ddl.import_files", "/META-INF/spring/import.sql");
 
         return hibernateProperties;
     }

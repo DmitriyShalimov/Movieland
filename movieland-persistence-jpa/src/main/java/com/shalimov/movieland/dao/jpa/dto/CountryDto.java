@@ -14,7 +14,10 @@ public class CountryDto {
     @Column(name = "name")
     private  String title;
 
-    @ManyToMany(mappedBy = "countries", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany
+    @JoinTable(name = "movie_country",
+            joinColumns = {@JoinColumn(name = "movie", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "country", referencedColumnName = "id")})
     private List<MovieDto> movies = new ArrayList<>();
 
     public List<MovieDto> getMovies() {
